@@ -5,7 +5,7 @@ int main() {
     Logger* logger = Logger::getInstance();
     logger->setLogLevel(LOG_LEVEL_INFO);
 
-    logger->info("Starting up main loop.");
+    logger->info("Starting the application.");
 
     auto* app = new RayTracerApp(256, 256, "image.ppm");
 
@@ -13,5 +13,5 @@ int main() {
 
     delete app;
 
-    logger->info("Finished up main loop.");
+    logger->info("Application finished.");
 }

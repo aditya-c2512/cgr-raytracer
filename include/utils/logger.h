@@ -5,6 +5,7 @@
 
 #ifndef CGR_RAYTRACER_LOG_H
 #define CGR_RAYTRACER_LOG_H
+#include <source_location>
 #include <string>
 
 enum LogLevel {
@@ -28,10 +29,10 @@ public:
     static Logger* getInstance();
     void setLogLevel(LogLevel logLevel);
 
-    void debug(const std::string& message) const;
-    void info(const std::string& message) const;
-    void warn(const std::string& message) const;
-    void error(const std::string& message) const;
+    void debug(const std::string &message, const std::source_location& location = std::source_location::current()) const;
+    void info(const std::string& message, const std::source_location& location = std::source_location::current()) const;
+    void warn(const std::string& message, const std::source_location& location = std::source_location::current()) const;
+    void error(const std::string& message, const std::source_location& location = std::source_location::current()) const;
 };
 
 #endif //CGR_RAYTRACER_LOG_H

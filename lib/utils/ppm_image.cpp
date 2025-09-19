@@ -15,7 +15,7 @@ PpmImage::~PpmImage() = default;
 void PpmImage::setPixel(const int x, const int y, const Color &color) {
     pixels[y * width + x] = color;
     logger->debug("Set pixel (" + std::to_string(x) + ", " + std::to_string(y) +
-        ") to R:" + std::to_string(color.red) + ", G:" + std::to_string(color.green) + ", B:" + std::to_string(color.blue));
+    ") to R:" + std::to_string(color.red) + ", G:" + std::to_string(color.green) + ", B:" + std::to_string(color.blue));
 }
 
 void PpmImage::writeFile(const std::string& fileName) const {

@@ -23,38 +23,38 @@ void Logger::setLogLevel(const LogLevel logLevel) {
     this->level = logLevel;
 }
 
-void Logger::debug(const std::string& message) const {
+void Logger::debug(const std::string& message, const std::source_location& location) const {
     if (this->level != LOG_LEVEL_DEBUG) {
         return;
     }
 
-    std::cout << "[DEBUG] " << getCurrentDateTime() << " -> " << message << std::endl;
+    std::cout << "[DEBUG] " << getCurrentDateTime() << " | " << location.function_name() << " | " << message << std::endl;
 }
 
-void Logger::info(const std::string& message) const {
+void Logger::info(const std::string& message, const std::source_location& location) const {
     if (this->level != LOG_LEVEL_INFO && this->level != LOG_LEVEL_DEBUG) {
         return;
     }
 
-    std::cout << "[INFO] " << getCurrentDateTime() << " -> " << message << std::endl;
+    std::cout << "\033[32m[INFO] " << getCurrentDateTime() << " | " << location.function_name() << " | " << message << "\033[0m" << std::endl;
 }
 
-void Logger::warn(const std::string& message) const {
+void Logger::warn(const std::string& message, const std::source_location& location) const {
     if (this->level != LOG_LEVEL_WARNING && this->level != LOG_LEVEL_INFO &&
         this->level != LOG_LEVEL_DEBUG) {
         return;
     }
 
-    std::cout << "[WARN] " << getCurrentDateTime() << " -> " << message << std::endl;
+    std::cout << "\033[33m[WARN] " << getCurrentDateTime() << " | " << location.function_name() << " | " << message << "\033[0m" << std::endl;
 }
 
-void Logger::error(const std::string& message) const {
+void Logger::error(const std::string& message, const std::source_location& location) const {
     if (this->level < LOG_LEVEL_ERROR && this->level != LOG_LEVEL_WARNING &&
         this->level != LOG_LEVEL_INFO && this->level != LOG_LEVEL_DEBUG) {
         return;
     }
 
-    std::cout << "[ERROR] " << getCurrentDateTime() << " -> " << message << std::endl;
+    std::cout << "\033[31m[ERROR] " << getCurrentDateTime() << " | " << location.function_name() << " | " << message << "\033[0m" << std::endl;
 }
 
 std::string Logger::getCurrentDateTime() {
