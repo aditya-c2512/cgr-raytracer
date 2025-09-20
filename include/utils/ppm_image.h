@@ -7,14 +7,8 @@
 #define CGR_RAYTRACER_IMAGE_WRITER_H
 #include <string>
 #include <vector>
-
+#include <math/color.h>
 #include "logger.h"
-
-struct Color {
-    double red;
-    double green;
-    double blue;
-};
 
 class PpmImage {
 private:

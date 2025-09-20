@@ -10,6 +10,8 @@ set(SOURCES
         lib/utils/logger.cpp
         lib/raytracer_app.cpp
         lib/utils/ppm_image.cpp
+        lib/math/vec3.cpp
+        lib/math/color.cpp
 )
 
 add_executable(cgr-raytracer ${SOURCES})

@@ -15,7 +15,7 @@ RayTracerApp::~RayTracerApp() {
     delete image;
 }
 
-void RayTracerApp::run() {
+void RayTracerApp::run() const {
     logger->info("Starting up Raytracer App.");
 
     for (int y = 0; y < imageHeight; y++) {

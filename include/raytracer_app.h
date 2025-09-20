@@ -19,7 +19,7 @@ public:
     RayTracerApp(int imageWidth, int imageHeight, std::string fileName);
     ~RayTracerApp();
 
-    void run();
+    void run() const;
 };
 
 #endif //CGR_RAYTRACER_RAYTRACER_APP_H
