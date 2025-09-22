@@ -17,9 +17,11 @@ private:
     std::vector<Color> pixels;
 
 public:
+    // Initialisation
     PpmImage(int width, int height);
     ~PpmImage();
 
+    // Image writing util functions
     void setPixel(int x, int y, const Color &color);
     void writeFile(const std::string& fileName) const;
 };

@@ -16,6 +16,7 @@ private:
     PpmImage* image;
 
 public:
+    // Initialisation
     RayTracerApp(int imageWidth, int imageHeight, std::string fileName);
     ~RayTracerApp();
 
