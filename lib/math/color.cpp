@@ -18,3 +18,11 @@ double Color::getGreen() const {
 double Color::getBlue() const {
     return blue;
 }
+
+Color Color::operator*(double x) const {
+    return {red * x, green * x, blue * x};
+}
+
+Color Color::operator+(const Color &color) const {
+    return {red + color.red, green + color.green, blue + color.blue};
+}

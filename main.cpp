@@ -7,7 +7,7 @@ int main() {
 
     logger->info("Starting the application.");
 
-    const auto* app = new RayTracerApp(256, 256, "../../Output/render.ppm");
+    const auto* app = new RayTracerApp("../../Blend/scene_export.json", 400, 16.0/9.0, "../../Output/render.ppm");
     app->run();
 
     logger->info("Application finished.");

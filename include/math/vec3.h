@@ -6,6 +6,8 @@
 #ifndef CGR_RAYTRACER_VEC3_H
 #define CGR_RAYTRACER_VEC3_H
 
+#include <iostream>
+
 class Vec3 {
 private:
     double x, y, z;
@@ -27,6 +29,7 @@ public:
     Vec3 operator - (const Vec3& v) const;
     Vec3 operator * (const Vec3& v) const;
     Vec3 operator / (const Vec3& v) const;
+    Vec3 operator*(double length) const;
     Vec3 operator / (double length) const;
     Vec3& operator += (const Vec3& v);
     Vec3& operator *= (double t);

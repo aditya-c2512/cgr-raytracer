@@ -13,6 +13,8 @@ set(SOURCES
         lib/math/vec3.cpp
         lib/math/color.cpp
         lib/math/camera.cpp
+        lib/math/ray.cpp
+        lib/scene.cpp
 )
 
 add_executable(cgr-raytracer ${SOURCES})
