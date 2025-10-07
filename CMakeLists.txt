@@ -12,6 +12,7 @@ set(SOURCES
         lib/utils/ppm_image.cpp
         lib/math/vec3.cpp
         lib/math/color.cpp
+        lib/math/camera.cpp
 )
 
 add_executable(cgr-raytracer ${SOURCES})

@@ -3,7 +3,7 @@
 ## Building & Running
 ### Supported Environments
 - This project was developed and tested primarily on **MacOS (Sequoia 15.6.x)**.
-- However, all libraries and frameworks employed are compatible with all Linux and Windows systems.
+- However, all libraries and frameworks employed are compatible with all **Linux** and **Windows** systems.
 - The project is developed using **C++20**, utilising **CMake** as the build tool.
 
 > **NOTE:** The `Logger` class uses ANSI escape codes for coloured console output. 
@@ -17,6 +17,12 @@
 > 
 > Nonetheless, the `Logger` is not the main aim of this project, and the escape codes
 > will not break the intended functionality.
+
+### Build the project
+
+### Run the project
+
+## Features Implemented
 
 ## Coding Conventions
 ### Logs

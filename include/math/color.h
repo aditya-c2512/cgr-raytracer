@@ -2,9 +2,10 @@
 // Created by Aditya Choubey on 20/09/2025.
 //
 
+#pragma once
+
 #ifndef CGR_RAYTRACER_COLOR_H
 #define CGR_RAYTRACER_COLOR_H
-
 
 class Color {
 private:

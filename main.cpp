@@ -8,10 +8,12 @@ int main() {
     logger->info("Starting the application.");
 
     const auto* app = new RayTracerApp(256, 256, "image.ppm");
-
     app->run();
 
-    delete app;
-
     logger->info("Application finished.");
+
+    delete app;
+    delete logger;
+
+    return 0;
 }
