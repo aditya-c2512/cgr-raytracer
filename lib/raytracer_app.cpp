@@ -7,8 +7,8 @@
 
 #include <utility>
 
-RayTracerApp::RayTracerApp(const int imageWidth, const int imageHeight, std::string fileName): imageWidth(imageWidth), imageHeight(imageHeight), fileName(std::move(fileName)) {
-    image = new PpmImage(imageWidth, imageHeight);
+RayTracerApp::RayTracerApp(const int imageWidth, const int imageHeight, const std::string& filepath): imageWidth(imageWidth), imageHeight(imageHeight) {
+    image = new PpmImage(filepath, imageWidth, imageHeight);
 }
 
 RayTracerApp::~RayTracerApp() {
@@ -27,6 +27,6 @@ void RayTracerApp::run() const {
             image->setPixel(x, y, Color{r,g,b});
         }
     }
-    image->writeFile(fileName);
+    image->write();
     logger->info("Finished up Raytracer App.");
 }

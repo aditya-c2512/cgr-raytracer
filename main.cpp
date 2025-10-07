@@ -7,7 +7,7 @@ int main() {
 
     logger->info("Starting the application.");
 
-    const auto* app = new RayTracerApp(256, 256, "image.ppm");
+    const auto* app = new RayTracerApp(256, 256, "../../Output/render.ppm");
     app->run();
 
     logger->info("Application finished.");

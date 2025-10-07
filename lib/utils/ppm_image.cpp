@@ -6,11 +6,61 @@
 #include <utils/logger.h>
 #include <fstream>
 
-PpmImage::PpmImage(const int width, const int height): width(width), height(height) {
+PpmImage::PpmImage(const std::string &filepath, const int width, const int height): width(width), height(height) {
+    this->filepath = filepath;
     pixels.reserve(width * height);
 }
 
 PpmImage::~PpmImage() = default;
+
+void PpmImage::read() {
+    std::ifstream imageFile(filepath, std::ios::binary);
+
+    if (!imageFile.is_open()) {
+        logger->error("Unable to open file: " + filepath);
+        return;
+    }
+
+    logger->info("Reading image from file: " + filepath);
+
+    std::string magicNumber;
+    imageFile >> magicNumber;
+
+    if (magicNumber != "P3") {
+        logger->error("Unsupported PPM format: " + magicNumber);
+        return;
+    }
+
+    char ch;
+    imageFile >> std::ws;
+    while (imageFile.peek() == '#') {
+        std::string comment;
+        std::getline(imageFile, comment);
+        imageFile >> std::ws;
+    }
+
+    int tempWidth, tempHeight;
+    imageFile >> tempWidth >> tempHeight;
+    int maxColorValue;
+    imageFile >> maxColorValue;
+    imageFile.get(ch); // consume the newline after maxColorValue
+
+    if (maxColorValue != 255) {
+        logger->error("Only max color value 255 is supported.\n");
+        return;
+    }
+
+    pixels.reserve(tempWidth * tempHeight);
+    for (int i = 0; i < tempWidth * tempHeight; ++i) {
+        int r, g, b;
+        imageFile >> r >> g >> b;
+        pixels[i] = Color(r, g, b);
+    }
+}
+
+Color PpmImage::getPixel(int x, int y) {
+    return pixels[y * width + x];
+}
 
 void PpmImage::setPixel(const int x, const int y, const Color &color) {
     pixels[y * width + x] = color;
@@ -19,15 +69,15 @@ void PpmImage::setPixel(const int x, const int y, const Color &color) {
     + ", B:" + std::to_string(color.getBlue()));
 }
 
-void PpmImage::writeFile(const std::string& fileName) const {
-    std::ofstream imageFile(fileName);
+void PpmImage::write() {
+    std::ofstream imageFile(filepath);
 
     if (!imageFile.is_open()) {
-        logger->error("Unable to open file: " + fileName);
+        logger->error("Unable to open file: " + filepath);
         return;
     }
 
-    logger->info("Starting writing image to file: " + fileName);
+    logger->info("Starting writing image to file: " + filepath);
 
     imageFile << "P3\n" << width << " " << height << "\n255\n";
 
@@ -39,7 +89,7 @@ void PpmImage::writeFile(const std::string& fileName) const {
         imageFile << imageRed << " " << imageGreen << " " << imageBlue << "\n";
     }
 
-    const std::filesystem::path filePath(fileName);
+    const std::filesystem::path filePath(filepath);
     logger->info("Finished writing image to file: " + std::filesystem::absolute(filePath).string());
     imageFile.close();
 }

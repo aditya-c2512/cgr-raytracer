@@ -12,12 +12,11 @@ class RayTracerApp {
 private:
     Logger* logger = Logger::getInstance();
     int imageWidth, imageHeight;
-    std::string fileName;
     PpmImage* image;
 
 public:
     // Initialisation
-    RayTracerApp(int imageWidth, int imageHeight, std::string fileName);
+    RayTracerApp(int imageWidth, int imageHeight, const std::string& fileName);
     ~RayTracerApp();
 
     void run() const;
