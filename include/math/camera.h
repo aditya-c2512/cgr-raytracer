@@ -9,15 +9,15 @@
 #include "vec3.h"
 #include <utils/json/json.h>
 
-#include "utils/logger.h"
-
 class Camera {
 private:
     Point3 origin;
     Vec3 lookAt;
-    Vec3 up, right;
+    Vec3 vUp = Vec3(0,1,0);
+    Vec3 u, v, w;
     double focalLength;
     int imageWidth, imageHeight;
+    double verticalFov;
     double viewportWidth, viewportHeight;
     Vec3 deltaU, deltaV;
     Point3 firstPixelPoint;

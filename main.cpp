@@ -8,7 +8,7 @@ int main(int argc, char** argv) {
 
     logger->info("Starting the application.");
 
-    auto* scene = new Scene("../../Blend/scene_export.json");
+    auto* scene = new Scene("../../ASCII/scene_export.json");
 
     const auto* app = new RayTracerApp(scene, "../../Output/render.ppm");
     app->run();
