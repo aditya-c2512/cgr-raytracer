@@ -15,14 +15,12 @@
 class RayTracerApp {
 private:
     Logger* logger = Logger::getInstance();
-    int imageWidth, imageHeight;
     PpmImage* image;
-    Camera camera;
-    Scene scene;
+    Scene* scene;
 
 public:
     // Initialisation
-    RayTracerApp(const std::string& scenePath, int imageWidth, double aspectRatio, const std::string& outputPath);
+    RayTracerApp(Scene* scene, const std::string& outputPath);
     ~RayTracerApp();
 
     Color trace(const Ray& ray) const;

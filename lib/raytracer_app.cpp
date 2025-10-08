@@ -6,10 +6,8 @@
 #include <utils/logger.h>
 #include <math/ray.h>
 
-RayTracerApp::RayTracerApp(const std::string& scenePath, const int imageWidth, const double aspectRatio, const std::string& filepath):
-                            imageWidth(imageWidth), imageHeight(static_cast<int>(imageWidth / aspectRatio)),
-                            camera(Camera(imageWidth, aspectRatio)), scene(scenePath) {
-    image = new PpmImage(filepath, imageWidth, imageHeight);
+RayTracerApp::RayTracerApp(Scene* scene, const std::string& filepath): scene(scene) {
+    image = new PpmImage(filepath, scene->getCamera()->getImageWidth(), scene->getCamera()->getImageHeight());
 }
 
 RayTracerApp::~RayTracerApp() {
@@ -25,13 +23,14 @@ Color RayTracerApp::trace(const Ray& ray) const {
 void RayTracerApp::run() const {
     logger->info("Starting up Raytracer App.");
 
-    auto deltaU = camera.getDeltaU();
-    auto deltaV = camera.getDeltaV();
-    auto firstPixelPoint = camera.getFirstPixelPoint();
-    auto cameraOrigin = camera.getOrigin();
+    Camera* camera = scene->getCamera();
+    auto deltaU = camera->getDeltaU();
+    auto deltaV = camera->getDeltaV();
+    auto firstPixelPoint = camera->getFirstPixelPoint();
+    auto cameraOrigin = camera->getOrigin();
 
-    for (int y = 0; y < imageHeight; y++) {
-        for (int x = 0; x < imageWidth; x++) {
+    for (int y = 0; y < camera->getImageHeight(); y++) {
+        for (int x = 0; x < camera->getImageWidth(); x++) {
             auto pixelCenter = firstPixelPoint + (deltaU * x) + (deltaV * y);
             auto rayDirection = pixelCenter - cameraOrigin;
             Ray ray(cameraOrigin, rayDirection);

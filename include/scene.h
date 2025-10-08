@@ -11,11 +11,14 @@
 
 class Scene {
 private:
-    // Camera camera;
+    Camera* camera;
     // std::vector<Shape> shapes;
 
 public:
-    Scene(const std::string& path);
+    explicit Scene(const std::string& path);
+    ~Scene();
+
+    Camera* getCamera() const;
 };
 
 #endif //CGR_RAYTRACER_SCENE_H
