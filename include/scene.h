@@ -8,9 +8,11 @@
 #define CGR_RAYTRACER_SCENE_H
 #include "shape.h"
 #include "math/camera.h"
+#include "utils/logger.h"
 
 class Scene {
 private:
+    Logger *logger = Logger::getInstance();
     Camera* camera;
     // std::vector<Shape> shapes;
 

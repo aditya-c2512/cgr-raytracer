@@ -9,10 +9,12 @@
 
 #include <fstream>
 #include <sstream>
+#include <utils/logger.h>
 #include <utils/json/json_value.h>
 
 namespace Json
 {
+    inline Logger* logger = Logger::getInstance();
     class Parser {
     public:
         explicit Parser(const std::string &text) : src(text), pos(0) {}
@@ -22,7 +24,7 @@ namespace Json
             JsonValue val = parseValue();
             skipWhitespace();
             if (pos != src.size())
-                throw std::runtime_error("Unexpected characters after JSON root");
+                logger->error("Unexpected characters after JSON root");
             return val;
         }
 
@@ -48,7 +50,7 @@ namespace Json
             if (src.compare(pos, 4, "true") == 0)  { pos += 4; return JsonValue(true); }
             if (src.compare(pos, 5, "false") == 0) { pos += 5; return JsonValue(false); }
             if (src.compare(pos, 4, "null") == 0)  { pos += 4; return JsonValue(nullptr); }
-            throw std::runtime_error("Invalid JSON value at position " + std::to_string(pos));
+            logger->error("Invalid JSON value at position " + std::to_string(pos));
         }
 
         JsonValue parseObject() {
@@ -61,13 +63,13 @@ namespace Json
                 skipWhitespace();
                 std::string key = parseString().asString();
                 skipWhitespace();
-                if (get() != ':') throw std::runtime_error("Expected ':' after key");
+                if (get() != ':') logger->error("Expected ':' after key");
                 skipWhitespace();
                 obj[key] = parseValue();
                 skipWhitespace();
                 char c = get();
                 if (c == '}') break;
-                if (c != ',') throw std::runtime_error("Expected ',' or '}' in object");
+                if (c != ',') logger->error("Expected ',' or '}' in object");
             }
             return JsonValue(obj);
         }
@@ -83,13 +85,13 @@ namespace Json
                 skipWhitespace();
                 const char c = get();
                 if (c == ']') break;
-                if (c != ',') throw std::runtime_error("Expected ',' or ']' in array");
+                if (c != ',') logger->error("Expected ',' or ']' in array");
             }
             return JsonValue(arr);
         }
 
         JsonValue parseString() {
-            if (get() != '"') throw std::runtime_error("Expected '\"' at start of string");
+            if (get() != '"') logger->error("Expected '\"' at start of string");
             std::string result;
             while (true) {
                 char c = get();
@@ -104,7 +106,7 @@ namespace Json
                         case 'n': result += '\n'; break;
                         case 'r': result += '\r'; break;
                         case 't': result += '\t'; break;
-                        default: throw std::runtime_error("Invalid escape sequence");
+                        default: logger->error("Invalid escape sequence");
                     }
                 } else {
                     result += c;
@@ -129,7 +131,7 @@ namespace Json
                     return JsonValue(std::stod(num));
                 return JsonValue(std::stoi(num));
             } catch (...) {
-                throw std::runtime_error("Invalid number at position " + std::to_string(start));
+                logger->error("Invalid number at position " + std::to_string(start));
             }
         }
     };
@@ -137,7 +139,7 @@ namespace Json
     inline JsonObject parse(const std::string &filename) {
         std::ifstream file(filename);
         if (!file.is_open())
-            throw std::runtime_error("Could not open file: " + filename);
+            logger->error("Could not open file: " + filename);
 
         std::ostringstream ss;
         ss << file.rdbuf();

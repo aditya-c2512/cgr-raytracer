@@ -55,6 +55,7 @@ void Logger::error(const std::string& message, const std::source_location& locat
     }
 
     std::cout << "\033[31m[ERROR] " << getCurrentDateTime() << " | " << location.function_name() << " | " << message << "\033[0m" << std::endl;
+    throw std::runtime_error(message);
 }
 
 std::string Logger::getCurrentDateTime() {

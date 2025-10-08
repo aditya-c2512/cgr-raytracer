@@ -9,6 +9,8 @@
 #include "vec3.h"
 #include <utils/json/json.h>
 
+#include "utils/logger.h"
+
 class Camera {
 private:
     Point3 origin;
