@@ -24,6 +24,10 @@ Point3 Ray::at(const double t) const {
 }
 
 void Ray::visualise(const std::string& filename) const {
+    if (logger->getLogLevel() != LOG_LEVEL_DEBUG) {
+        return;
+    }
+
     std::ofstream file(filename, std::ios::app); // append mode
     if (!file.is_open()) {
         logger->error("Could not open file '" + filename + "' for writing.\n");

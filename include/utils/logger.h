@@ -29,6 +29,7 @@ public:
     static Logger* getInstance();
     void setLogLevel(LogLevel logLevel);
 
+    LogLevel getLogLevel();
     void debug(const std::string &message, const std::source_location& location = std::source_location::current()) const;
     void info(const std::string& message, const std::source_location& location = std::source_location::current()) const;
     void warn(const std::string& message, const std::source_location& location = std::source_location::current()) const;

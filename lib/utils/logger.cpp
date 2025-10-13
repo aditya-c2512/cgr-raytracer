@@ -23,6 +23,10 @@ void Logger::setLogLevel(const LogLevel logLevel) {
     this->level = logLevel;
 }
 
+LogLevel Logger::getLogLevel() {
+    return this->level;
+}
+
 void Logger::debug(const std::string& message, const std::source_location& location) const {
     if (this->level != LOG_LEVEL_DEBUG) {
         return;

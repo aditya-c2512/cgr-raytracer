@@ -30,7 +30,9 @@ void RayTracerApp::run() const {
         for (int x = 0; x < camera->getImageWidth(); x++) {
             Ray ray = camera->getRay(x, y);
             ray.visualise();
+
             Color pixelColor = trace(ray);
+
             logger->debug("Color for pixel (" + std::to_string(x) + ", " + std::to_string(y) + "): " + pixelColor.toString());
 
             image->setPixel(x, y, pixelColor);
