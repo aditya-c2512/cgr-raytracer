@@ -24,22 +24,20 @@ void RayTracerApp::run() const {
     logger->info("Starting up Raytracer App.");
 
     Camera* camera = scene->getCamera();
-    auto deltaU = camera->getDeltaU();
-    auto deltaV = camera->getDeltaV();
-    auto firstPixelPoint = camera->getFirstPixelPoint();
-    auto cameraOrigin = camera->getOrigin();
 
+    logger->info("Starting Rendering Stage");
     for (int y = 0; y < camera->getImageHeight(); y++) {
         for (int x = 0; x < camera->getImageWidth(); x++) {
-            auto pixelCenter = firstPixelPoint + (deltaU * x) + (deltaV * y);
-            auto rayDirection = pixelCenter - cameraOrigin;
-            Ray ray(cameraOrigin, rayDirection);
-
+            Ray ray = camera->getRay(x, y);
+            ray.visualise();
             Color pixelColor = trace(ray);
+            logger->debug("Color for pixel (" + std::to_string(x) + ", " + std::to_string(y) + "): " + pixelColor.toString());
 
             image->setPixel(x, y, pixelColor);
         }
     }
+    logger->info("Finished Rendering Stage");
+
     image->write();
     logger->info("Finished up Raytracer App.");
 }

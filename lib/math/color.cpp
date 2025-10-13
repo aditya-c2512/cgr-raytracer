@@ -26,3 +26,7 @@ Color Color::operator*(double x) const {
 Color Color::operator+(const Color &color) const {
     return {red + color.red, green + color.green, blue + color.blue};
 }
+
+std::string Color::toString() const {
+    return "(" + std::to_string(red) + ", " + std::to_string(green) + ", " + std::to_string(blue) + ")";
+}

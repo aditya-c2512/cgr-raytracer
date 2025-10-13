@@ -6,6 +6,7 @@
 
 #ifndef CGR_RAYTRACER_COLOR_H
 #define CGR_RAYTRACER_COLOR_H
+#include <string>
 
 class Color {
 private:
@@ -21,6 +22,8 @@ public:
     Color operator*(double x) const;
 
     Color operator+(const Color & color) const;
+
+    std::string toString() const;
 };
 
 #endif //CGR_RAYTRACER_COLOR_H
