@@ -19,9 +19,9 @@ Camera::Camera(const JsonObject &obj) {
     imageHeight = obj.at("film_resolution").as<JsonObject>().at("y").as<int>();
 
     forward = lookAt.normalize();
-    vUp = Vec3(0, 0, 1);
+    vUp = Vec3(0, 1, 0);
     if (std::fabs(vUp.dot(forward)) > 0.999)
-        vUp = Vec3(0, 1, 0); // avoid degeneracy
+        vUp = Vec3(0, 0, 1); // avoid degeneracy
 
     right = forward.cross(vUp).normalize();
     up = right.cross(forward).normalize();

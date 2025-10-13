@@ -16,6 +16,8 @@ set(SOURCES
         lib/math/ray.cpp
         lib/scene.cpp
         lib/utils/args-parser.cpp
+        lib/shapes/shape-factory.cpp
+        lib/shapes/sphere.cpp
 )
 
 add_executable(cgr-raytracer ${SOURCES})

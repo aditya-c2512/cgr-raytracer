@@ -6,15 +6,17 @@
 
 #ifndef CGR_RAYTRACER_SCENE_H
 #define CGR_RAYTRACER_SCENE_H
-#include "shape.h"
-#include "math/camera.h"
-#include "utils/logger.h"
+#include <lights/light.h>
+#include <shapes/shape.h>
+#include <math/camera.h>
+#include <utils/logger.h>
 
 class Scene {
 private:
     Logger *logger = Logger::getInstance();
     Camera* camera;
-    // std::vector<Shape> shapes;
+    std::vector<Light> lights;
+    std::vector<Shape> shapes;
 
 public:
     explicit Scene(const std::string& path);

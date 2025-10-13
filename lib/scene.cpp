@@ -5,13 +5,20 @@
 #include <scene.h>
 #include <utils/json/json.h>
 
+#include "shapes/shape-factory.h"
+
 Scene::Scene(const std::string &path) {
     JsonObject sceneObject = Json::parse(path);
     auto objects = sceneObject["objects"].as<JsonArray>();
     JsonObject cameraObject;
     for (const auto& obj: objects) {
-        if (obj.isObject() && (obj.as<JsonObject>().at("type").as<std::string>()) == "CAMERA") {
+        if (!obj.isObject()) continue;
+
+        if (obj.as<JsonObject>().at("type").as<std::string>() == "CAMERA") {
             cameraObject = obj.as<JsonObject>();
+        } else if (obj.as<JsonObject>().at("type").as<std::string>() == "LIGHT") {}
+        else {
+            shapes.push_back(ShapeFactory::createShape(obj.as<JsonObject>()));
         }
     }
 
