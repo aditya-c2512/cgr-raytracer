@@ -37,6 +37,7 @@ void RayTracerApp::run() const {
 
             image->setPixel(x, y, pixelColor);
         }
+        logger->info("Rendered Scanline #" + std::to_string(y+1));
     }
     logger->info("Finished Rendering Stage");
 

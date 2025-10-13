@@ -1,8 +1,7 @@
 #include <utils/logger.h>
 #include <utils/json/json.h>
+#include <utils/args-parser.h>
 #include <raytracer_app.h>
-
-#include "utils/args-parser.h"
 
 int main(int argc, char** argv) {
     Logger* logger = Logger::getInstance();
@@ -10,11 +9,16 @@ int main(int argc, char** argv) {
 
     auto* args = new ArgsParser(argc, argv);
 
+    if (args->get("help").boolVal) {
+        logger->info("Usage: raytracer [OPTIONS]");
+        return EXIT_SUCCESS;
+    }
+
     logger->info("Starting the application.");
 
-    auto* scene = new Scene(args->getArg("scene").stringVal);
+    auto* scene = new Scene(args->get("scene").stringVal);
 
-    const auto* app = new RayTracerApp(scene, args->getArg("render-output").stringVal);
+    const auto* app = new RayTracerApp(scene, args->get("render-output").stringVal);
     app->run();
 
     logger->info("Application finished.");
@@ -23,5 +27,5 @@ int main(int argc, char** argv) {
     delete scene;
     delete logger;
 
-    return 0;
+    return EXIT_SUCCESS;
 }

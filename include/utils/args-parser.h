@@ -12,6 +12,7 @@
 struct ArgsValue {
     int integerNum;
     double floatingNum;
+    bool boolVal;
     std::string stringVal;
 };
 
@@ -46,7 +47,7 @@ private:
 
 public:
     ArgsParser(int argc, char** argv);
-    ArgsValue getArg(const std::string& argName);
+    ArgsValue get(const std::string& argName);
 };
 
 #endif //CGR_RAYTRACER_ARGS_PARSER_H

@@ -16,7 +16,10 @@ ArgsParser::ArgsParser(int argc, char **argv) {
         arg = arg.substr(2);
         auto pos = arg.find('=');
         if (pos == std::string::npos) {
-            logger->warn("Ignoring argument without '=': " + arg);
+            ArgsValue parsedValue;
+            parsedValue.boolVal = true;
+            argMap[arg] = parsedValue;
+            logger->info("Parsed argument: --" + arg + "=true");
             continue;
         }
 
@@ -40,9 +43,10 @@ ArgsParser::ArgsParser(int argc, char **argv) {
     }
 }
 
-ArgsValue ArgsParser::getArg(const std::string& argName) {
+ArgsValue ArgsParser::get(const std::string& argName) {
     if (!argMap.contains(argName)) {
-        logger->error("Argument '" + argName + "' not found.");
+        logger->warn("Argument '" + argName + "' not found.");
+        return {};
     }
 
     return argMap.at(argName);

@@ -16,10 +16,7 @@ Camera::Camera(const JsonObject &obj) {
     focalLength = obj.at("focal_length_mm").as<double>();
 
     imageWidth = obj.at("film_resolution").as<JsonObject>().at("x").as<int>();
-    double aspectRatio = sensorWidth / sensorHeight;
-    int imHeight = static_cast<int>(imageWidth / aspectRatio);
-    imHeight = (imHeight < 1) ? 1 : imHeight;
-    this->imageHeight = imHeight;
+    imageHeight = obj.at("film_resolution").as<JsonObject>().at("y").as<int>();
 
     forward = lookAt.normalize();
     vUp = Vec3(0, 0, 1);
