@@ -15,7 +15,7 @@ Shape* ShapeFactory::createShape(const JsonObject &shapeObject) {
         case SPHERE:
             return new Sphere(shapeObject);
         case PLANE:
-            return new Plane(shapeObject);
+            return new Plane(Point3(0,0,0), Vec3(0,0,1));
         case CUBE:
             return new Cube(shapeObject);
         case CYLINDER:

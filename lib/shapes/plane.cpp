@@ -23,9 +23,8 @@ Plane::Plane(const JsonObject &shapeObject) {
 }
 
 bool Plane::intersect(const Ray &ray, double tMin, double tMax, Hit &record) {
-    if (auto den = normal.dot(ray.getDirection()); den > 1e-6) {
-        Vec3 pointToOrigin = ray.getOrigin() - point;
-        auto t = pointToOrigin.dot(normal) / den;
+    if (const auto den = normal.dot(ray.getDirection()); std::abs(den) > 1e-6) {
+        const auto t = (point - ray.getOrigin()).dot(normal) / den;
         return (t >= 0);
     }
 

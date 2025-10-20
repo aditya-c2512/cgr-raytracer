@@ -11,9 +11,9 @@ Camera::Camera(const JsonObject &obj) {
     const auto lookAtArray = obj.at("gaze_direction").as<JsonArray>();
     lookAt = Vec3(lookAtArray.at(0).as<double>(), lookAtArray.at(1).as<double>(), lookAtArray.at(2).as<double>());
 
-    sensorWidth = obj.at("sensor_width_mm").as<double>();
-    sensorHeight = obj.at("sensor_height_mm").as<double>();
-    focalLength = obj.at("focal_length_mm").as<double>();
+    sensorWidth = obj.at("sensor_width_mm").as<double>() / 1000.0;
+    sensorHeight = obj.at("sensor_height_mm").as<double>() / 1000.0;
+    focalLength = obj.at("focal_length_mm").as<double>() / 1000.0;
 
     imageWidth = obj.at("film_resolution").as<JsonObject>().at("x").as<int>();
 
@@ -22,10 +22,8 @@ Camera::Camera(const JsonObject &obj) {
         imageHeight = obj.at("film_resolution").as<JsonObject>().at("y").as<int>();
     imageHeight = static_cast<int>(imHeightCalc);
 
-    forward = lookAt.normalize();
+    forward = (lookAt - origin).normalize();
     vUp = Vec3(0, 0, 1);
-    if (std::fabs(vUp.dot(forward)) > 0.999)
-        vUp = Vec3(0, 1, 0); // avoid degeneracy
 
     right = forward.cross(vUp).normalize();
     up = right.cross(forward).normalize();
@@ -45,12 +43,11 @@ int Camera::getImageHeight() const {
 }
 
 Ray Camera::getRay(int px, int py) const {
-    double ndcX = (px + 0.5) / imageWidth * 2.0 - 1.0;
-    double ndcY = 1.0 - (py + 0.5) / imageHeight * 2.0; // flip Y
+    double ndcX = (px + 0.5) / imageWidth;
+    double ndcY = (py + 0.5) / imageHeight;
 
-    // Image plane in world units (mm)
-    double imagePlaneX = ndcX * (sensorWidth / 2.0);
-    double imagePlaneY = ndcY * (sensorHeight / 2.0);
+    double imagePlaneX = (ndcX - 0.5) * sensorWidth;
+    double imagePlaneY = (0.5 - ndcY) * sensorHeight;
 
     // Ray direction in world space
     Vec3 pixelPos = origin + (forward * focalLength) + (right * imagePlaneX) + (up * imagePlaneY);

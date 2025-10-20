@@ -44,6 +44,7 @@ void RayTracerApp::run() const {
             Ray ray = camera->getRay(x, y);
 
             Color pixelColor = trace(ray);
+            // Color pixelColor = Color(ray.getDirection().getX(), ray.getDirection().getY(), ray.getDirection().getZ());
 
             logger->debug("Color for pixel (" + std::to_string(x) + ", " + std::to_string(y) + "): " + pixelColor.toString());
 

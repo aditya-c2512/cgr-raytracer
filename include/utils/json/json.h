@@ -51,6 +51,7 @@ namespace Json
             if (src.compare(pos, 5, "false") == 0) { pos += 5; return JsonValue(false); }
             if (src.compare(pos, 4, "null") == 0)  { pos += 4; return JsonValue(nullptr); }
             logger->error("Invalid JSON value at position " + std::to_string(pos));
+            return {};
         }
 
         JsonValue parseObject() {
@@ -133,6 +134,7 @@ namespace Json
             } catch (...) {
                 logger->error("Invalid number at position " + std::to_string(start));
             }
+            return {};
         }
     };
 
