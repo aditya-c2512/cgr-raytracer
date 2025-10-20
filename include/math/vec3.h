@@ -36,7 +36,7 @@ public:
     Vec3& operator /= (double t);
 
     double length() const;
-    double length_squared() const;
+    double lengthSquared() const;
 
     double dot(const Vec3& v) const;
     Vec3 cross(const Vec3& v) const;

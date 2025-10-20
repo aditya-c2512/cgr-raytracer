@@ -18,7 +18,7 @@ public:
     Sphere(const Vec3& center, double radius);
     explicit Sphere(const JsonObject &shapeObject);
 
-    bool intersect(const Ray& ray) override;
+    bool intersect(const Ray& ray, double tMin, double tMax, Hit& record) override;
 };
 
 #endif //CGR_RAYTRACER_SPHERE_H

@@ -4,18 +4,20 @@
 
 #include <shapes/shape-factory.h>
 #include <shapes/sphere.h>
+#include <shapes/cube.h>
+#include <shapes/plane.h>
 
 Logger* ShapeFactory::logger = Logger::getInstance();
 
-Shape ShapeFactory::createShape(const JsonObject &shapeObject) {
+Shape* ShapeFactory::createShape(const JsonObject &shapeObject) {
     const std::string shapeTypeValue = shapeObject.at("type").as<std::string>();
     switch (typeMap[shapeTypeValue]) {
         case SPHERE:
-            return Sphere(shapeObject);
+            return new Sphere(shapeObject);
         case PLANE:
-            return {};
+            return new Plane(shapeObject);
         case CUBE:
-            return {};
+            return new Cube(shapeObject);
         case CYLINDER:
             return {};
         case CONE:

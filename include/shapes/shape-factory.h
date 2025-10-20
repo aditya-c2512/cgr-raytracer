@@ -34,7 +34,7 @@ public:
     ShapeFactory() = default;
     ~ShapeFactory() = default;
 
-    static Shape createShape(const JsonObject &shapeObject);
+    static Shape* createShape(const JsonObject &shapeObject);
 };
 
 

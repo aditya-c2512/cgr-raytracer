@@ -16,12 +16,16 @@ Camera::Camera(const JsonObject &obj) {
     focalLength = obj.at("focal_length_mm").as<double>();
 
     imageWidth = obj.at("film_resolution").as<JsonObject>().at("x").as<int>();
-    imageHeight = obj.at("film_resolution").as<JsonObject>().at("y").as<int>();
+
+    double imHeightCalc = imageWidth * sensorHeight / sensorWidth;
+    if (imHeightCalc < 1)
+        imageHeight = obj.at("film_resolution").as<JsonObject>().at("y").as<int>();
+    imageHeight = static_cast<int>(imHeightCalc);
 
     forward = lookAt.normalize();
-    vUp = Vec3(0, 1, 0);
+    vUp = Vec3(0, 0, 1);
     if (std::fabs(vUp.dot(forward)) > 0.999)
-        vUp = Vec3(0, 0, 1); // avoid degeneracy
+        vUp = Vec3(0, 1, 0); // avoid degeneracy
 
     right = forward.cross(vUp).normalize();
     up = right.cross(forward).normalize();

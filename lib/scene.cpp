@@ -27,8 +27,14 @@ Scene::Scene(const std::string &path) {
 
 Scene::~Scene() {
     delete camera;
+    for (auto shape : shapes) delete shape;
+    for (auto light : lights) delete light;
 }
 
 Camera * Scene::getCamera() const {
     return camera;
+}
+
+std::vector<Shape*> Scene::getShapes() const {
+    return shapes;
 }

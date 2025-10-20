@@ -73,10 +73,10 @@ Vec3 & Vec3::operator/=(double t) {
 }
 
 double Vec3::length() const {
-    return std::sqrt(length_squared());
+    return std::sqrt(lengthSquared());
 }
 
-double Vec3::length_squared() const {
+double Vec3::lengthSquared() const {
     return x * x + y * y + z * z;
 }
 

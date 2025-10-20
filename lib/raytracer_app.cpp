@@ -15,9 +15,22 @@ RayTracerApp::~RayTracerApp() {
 }
 
 Color RayTracerApp::trace(const Ray& ray) const {
+    auto shapes = scene->getShapes();
+    Color color = Color(0, 0, 0);
+
     const Vec3 unitDirection = ray.getDirection().normalize();
     auto a = 0.5 * (unitDirection.getY() + 1.0);
-    return Color(1.0, 1.0, 1.0) * (1.0 - a) + Color(0.5, 0.7, 1.0) * a;
+    color = Color(1.0, 1.0, 1.0) * (1.0 - a) + Color(0.5, 0.7, 1.0) * a;
+
+    for (auto shape : shapes) {
+        Hit record;
+        auto hit = shape->intersect(ray, 0, 500000, record);
+        if (hit) {
+            color = Color(1, 0, 0);
+        }
+    }
+
+    return color;
 }
 
 void RayTracerApp::run() const {
@@ -29,7 +42,6 @@ void RayTracerApp::run() const {
     for (int y = 0; y < camera->getImageHeight(); y++) {
         for (int x = 0; x < camera->getImageWidth(); x++) {
             Ray ray = camera->getRay(x, y);
-            ray.visualise();
 
             Color pixelColor = trace(ray);
 

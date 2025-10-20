@@ -15,14 +15,15 @@ class Scene {
 private:
     Logger *logger = Logger::getInstance();
     Camera* camera;
-    std::vector<Light> lights;
-    std::vector<Shape> shapes;
+    std::vector<Light*> lights;
+    std::vector<Shape*> shapes;
 
 public:
     explicit Scene(const std::string& path);
     ~Scene();
 
     Camera* getCamera() const;
+    std::vector<Shape*> getShapes() const;
 };
 
 #endif //CGR_RAYTRACER_SCENE_H
