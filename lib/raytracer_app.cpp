@@ -22,11 +22,15 @@ Color RayTracerApp::trace(const Ray& ray) const {
     auto a = 0.5 * (unitDirection.getY() + 1.0);
     color = Color(1.0, 1.0, 1.0) * (1.0 - a) + Color(0.5, 0.7, 1.0) * a;
 
+    double minT = 500000;
     for (auto shape : shapes) {
         Hit record;
         auto hit = shape->intersect(ray, 0, 500000, record);
         if (hit) {
-            color = Color(1, 0, 0);
+            if (record.getT() < minT) {
+                minT = record.getT();
+                color = record.getColor();
+            }
         }
     }
 

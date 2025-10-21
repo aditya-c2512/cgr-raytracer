@@ -23,6 +23,26 @@ public:
     double getY() const;
     double getZ() const;
 
+    double& operator[](const int i) {
+        switch (i) {
+            case 0: return x;
+            case 1: return y;
+            case 2: return z;
+            default:
+                throw std::out_of_range("Vec3 index out of range (valid: 0, 1, 2)");
+        }
+    }
+
+    const double& operator[](const int i) const {
+        switch (i) {
+            case 0: return x;
+            case 1: return y;
+            case 2: return z;
+            default:
+                throw std::out_of_range("Vec3 index out of range (valid: 0, 1, 2)");
+        }
+    }
+
     // Supported vector operations
     Vec3 operator - () const;
     Vec3 operator + (const Vec3& v) const;

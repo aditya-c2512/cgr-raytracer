@@ -26,32 +26,39 @@ Cube::Cube(const JsonObject &shapeObject) {
 }
 
 bool Cube::intersect(const Ray &ray, double tMin, double tMax, Hit &record) {
-    auto minX = (minPoint.getX() - ray.getOrigin().getX()) / ray.getDirection().getX();
-    auto maxX = (maxPoint.getX() - ray.getOrigin().getX()) / ray.getDirection().getX();
+    double t0 = tMin;
+    double t1 = tMax;
 
-    if (minX > maxX) std::swap(minX, maxX);
+    Vec3 normal; // normal of hit face
 
-    auto minY = (minPoint.getY() - ray.getOrigin().getY()) / ray.getDirection().getY();
-    auto maxY = (maxPoint.getY() - ray.getOrigin().getY()) / ray.getDirection().getY();
+    // For each axis: find intersection with the slabs
+    for (int i = 0; i < 3; ++i) {
+        double invD = 1.0 / ray.getDirection()[i];
+        double tNear = (minPoint[i] - ray.getOrigin()[i]) * invD;
+        double tFar  = (maxPoint[i] - ray.getOrigin()[i]) * invD;
 
-    if (minY > maxY) std::swap(minY, maxY);
+        // swap if needed
+        if (invD < 0.0) std::swap(tNear, tFar);
 
-    if ((minX > maxY) || (minY > maxX))
-        return false;
+        // Update t0 and t1 for the interval
+        if (tNear > t0) {
+            t0 = tNear;
+            // set normal according to which face we hit
+            normal = Vec3(0, 0, 0);
+            normal[i] = (invD > 0) ? -1 : 1; // direction of normal
+        }
+        t1 = std::min(t1, tFar);
 
-    if (minY > minX) minX = minY;
-    if (maxY < maxX) maxX = maxY;
+        // If no overlap, no hit
+        if (t1 <= t0)
+            return false;
+    }
 
-    auto minZ = (minPoint.getZ() - ray.getOrigin().getZ()) / ray.getDirection().getZ();
-    auto maxZ = (maxPoint.getZ() - ray.getOrigin().getZ()) / ray.getDirection().getZ();
-
-    if (minZ > maxZ) std::swap(minZ, maxZ);
-
-    if ((minX > maxZ) || (minZ > maxX))
-        return false;
-
-    if (minZ > minX) minX = minZ;
-    if (maxZ < maxX) maxX = maxZ;
+    // At this point, t0 is the first intersection distance
+    record.setT(t0);
+    record.setPoint(ray.at(t0));
+    record.setNormal(normal);
+    record.setColor(Color(0, 1, 0));
 
     return true;
 }

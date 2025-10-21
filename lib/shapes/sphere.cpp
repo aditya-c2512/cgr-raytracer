@@ -33,6 +33,7 @@ bool Sphere::intersect(const Ray& ray, double tMin, double tMax, Hit& record) {
     record.setT(root);
     record.setPoint(ray.at(record.getT()));
     record.setNormal((record.getPoint() - center) / radius);
+    record.setColor(Color(1, 0, 0));
 
     return true;
 }

@@ -13,6 +13,7 @@ class Plane: public Shape {
 private:
     Point3 point;
     Vec3 normal;
+    Point3 corners[4];
 
 public:
     Plane(const Point3& point, const Vec3 &normal);
