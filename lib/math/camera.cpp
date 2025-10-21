@@ -24,6 +24,18 @@ Camera::Camera(const JsonObject &obj) {
     imageHeight = (imHeightCalc < 1) ? obj.at("film_resolution").as<JsonObject>().at("y").as<int>()
                                      : static_cast<int>(imHeightCalc);
 
+    // --- Compute focal length from vertical FOV ---
+    // vertical_fov is in degrees
+    double vFOV = obj.at("vertical_fov").as<double>() * M_PI / 180.0;
+    double hFOV = obj.at("horizontal_fov").as<double>() * M_PI / 180.0;
+
+    // Compute focal length using vertical FOV (can switch to horizontal if desired)
+    double f_v = (sensorHeight / 2.0) / std::tan(vFOV / 2.0);
+    double f_h = (sensorWidth / 2.0) / std::tan(hFOV / 2.0);
+
+    // Pick the smaller to avoid cropping
+    focalLength = std::min(f_v, f_h);
+
     forward = (lookAt - origin).normalize();
 
     // Robust up vector: avoid colinear with forward
