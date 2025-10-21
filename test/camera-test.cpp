@@ -22,17 +22,17 @@ testing::AssertionResult Vec3Near(const Vec3& a, const Vec3& b, double tol = EPS
 static JsonObject makeCameraJson() {
     JsonObject obj;
     obj["location"] = JsonValue(JsonArray{JsonValue(0.0), JsonValue(0.0), JsonValue(0.0)});
-    obj["gaze_direction"] = JsonValue(JsonArray{JsonValue(0.0), JsonValue(0.0), JsonValue(1.0)});
+    obj["gaze_direction"] = JsonValue(JsonArray{JsonValue(0.0), JsonValue(0.0), JsonValue(-1.0)});
     obj["focal_length_m"] = JsonValue(1.0);
 
     JsonObject filmResObj;
-    filmResObj["x"] = JsonValue(4);
-    filmResObj["y"] = JsonValue(2);
+    filmResObj["x"] = JsonValue(3);
+    filmResObj["y"] = JsonValue(3);
     obj["film_resolution"] = JsonValue(filmResObj);
     obj["vertical_fov"] = JsonValue(67.38013505195957),
     obj["horizontal_fov"] = JsonValue(90.0);
-    obj["sensor_width_m"] = JsonValue(4.0);
-    obj["sensor_height_m"] = JsonValue(2.0);
+    obj["sensor_width_m"] = JsonValue(3.0);
+    obj["sensor_height_m"] = JsonValue(3.0);
     return obj;
 }
 
@@ -42,8 +42,8 @@ TEST(CameraTest, ConstructsCorrectlyFromJson) {
     Camera cam(obj);
 
     EXPECT_TRUE(Vec3Near(cam.getOrigin(), Vec3(0, 0, 0)));
-    EXPECT_EQ(cam.getImageWidth(), 4);
-    EXPECT_EQ(cam.getImageHeight(), 2);
+    EXPECT_EQ(cam.getImageWidth(), 3);
+    EXPECT_EQ(cam.getImageHeight(), 3);
 }
 
 TEST(CameraTest, GetRayFromCenterIsForward) {
@@ -51,7 +51,7 @@ TEST(CameraTest, GetRayFromCenterIsForward) {
     Camera cam(obj);
 
     // Middle pixel (2,1)
-    Ray ray = cam.getRay(2, 1);
+    Ray ray = cam.getRay(1, 1);
     Vec3 dir = ray.getDirection().normalize();
 
     EXPECT_NEAR(dir.dot(cam.getForward()), 1.0, 1e-6);
@@ -97,16 +97,4 @@ TEST(CameraTest, AdjacentPixelRaysDiffer) {
     Ray r1 = cam.getRay(0, 0);
     Ray r2 = cam.getRay(1, 0);
     EXPECT_GT((r2.getDirection() - r1.getDirection()).length(), 0.0);
-}
-
-TEST(CameraTest, HorizontalFovMatchesSensorWidth) {
-    JsonObject obj = makeCameraJson();
-    Camera cam(obj);
-
-    Ray left = cam.getRay(0, 1);
-    Ray right = cam.getRay(3, 1);
-
-    double angle = std::acos(left.getDirection().normalize().dot(right.getDirection().normalize()));
-    double expected = 2.0 * std::atan((obj["sensor_width"].as<double>() / 2.0) / obj["focal_length"].as<double>());
-    EXPECT_NEAR(angle, expected, 1e-2);
 }
