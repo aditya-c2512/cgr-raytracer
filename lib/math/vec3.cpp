@@ -89,5 +89,8 @@ Vec3 Vec3::cross(const Vec3 &v) const {
 }
 
 Vec3 Vec3::normalize() const {
+    if (this->lengthSquared() == 0) {
+        return *this;
+    }
     return (*this) / length();
 }

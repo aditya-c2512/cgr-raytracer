@@ -35,10 +35,13 @@ bool Plane::intersect(const Ray &ray, double tMin, double tMax, Hit &record) {
 
     // --- Step 2: Check if intersection point is inside the 4-corner polygon ---
     for (int i = 0; i < 4; ++i) {
-        Vec3 edge = corners[(i+1)%4] - corners[i]; // Edge vector
+        Vec3 edge = (corners[(i+1)%4] - corners[i]); // Edge vector
         Vec3 vp = p - corners[i];                 // Vector from corner to point
-        if (normal.dot(edge.cross(vp)) < 0)      // Outside if negative
+        if (normal.dot(edge.cross(vp)) < 0) {
+            // Outside if negative
+            logger->debug("Point is outside bounds: (" + std::to_string(p.getX()) + ", " + std::to_string(p.getY()) + ", " + std::to_string(p.getZ()) + ")");
             return false;
+        }
     }
 
     // --- Step 3: Fill hit record ---

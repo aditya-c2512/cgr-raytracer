@@ -11,6 +11,7 @@
 
 class Plane: public Shape {
 private:
+    Logger* logger = Logger::getInstance();
     Point3 point;
     Vec3 normal;
     Point3 corners[4];

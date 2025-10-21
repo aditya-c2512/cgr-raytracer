@@ -10,4 +10,6 @@ file(GLOB_RECURSE SOURCES
         "${CMAKE_SOURCE_DIR}/main.cpp"
 )
 
+add_subdirectory(test)
+
 add_executable(cgr-raytracer ${SOURCES})
