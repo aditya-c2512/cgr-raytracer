@@ -16,39 +16,45 @@ Plane::Plane(const JsonObject &shapeObject) {
     point = corners[0];
 
     Vec3 edge1 = corners[1] - corners[0];
-    Vec3 edge2 = corners[3] - corners[0]; // use corner3 instead of corner2
+    Vec3 edge2 = corners[3] - corners[0];
+
     normal = edge1.cross(edge2).normalize();
-    if (normal.getY() < 0) normal = -normal;
 }
 
 bool Plane::intersect(const Ray &ray, double tMin, double tMax, Hit &record) {
-    // --- Step 1: Ray-plane intersection ---
-    const double denom = normal.dot(ray.getDirection());
-    if (std::abs(denom) < 1e-6)  // Ray parallel to plane
-        return false;
+    double denom = ray.getDirection().dot(normal);
+    if (std::fabs(denom) < 1e-8)
+        return false;  // Parallel to plane
 
-    const double t = (point - ray.getOrigin()).dot(normal) / denom;
+    double t = (point - ray.getOrigin()).dot(normal) / denom;
     if (t < tMin || t > tMax)
         return false;
 
-    Point3 p = ray.getOrigin() + ray.getDirection() * t;
+    Point3 hitPoint = ray.getOrigin() + ray.getDirection() * t;
 
-    // --- Step 2: Check if intersection point is inside the 4-corner polygon ---
-    for (int i = 0; i < 4; ++i) {
-        Vec3 edge = (corners[(i+1)%4] - corners[i]); // Edge vector
-        Vec3 vp = p - corners[i];                 // Vector from corner to point
-        if (normal.dot(edge.cross(vp)) < 0) {
-            // Outside if negative
-            logger->debug("Point is outside bounds: (" + std::to_string(p.getX()) + ", " + std::to_string(p.getY()) + ", " + std::to_string(p.getZ()) + ")");
-            return false;
-        }
-    }
+    // Check if inside the quadrilateral
+    if (!isInside(hitPoint))
+        return false;
 
-    // --- Step 3: Fill hit record ---
     record.setT(t);
-    record.setPoint(p);
-    record.setNormal((denom < 0) ? normal : -normal); // Always point against ray
-    record.setColor(Color(0,0,1));
+    record.setPoint(hitPoint);
+    record.setNormal(normal);
+    record.setColor(Color(0, 0, 1));
 
+    return true;
+}
+
+bool Plane::isInside(const Point3 &p) const {
+    for (int i = 0; i < 4; ++i) {
+        const Point3 &a = corners[i];
+        const Point3 &b = corners[(i + 1) % 4];
+        Vec3 edge = b - a;
+        Vec3 toPoint = p - a;
+        Vec3 crossProd = edge.cross(toPoint);
+
+        // If point is outside (cross product not facing same side as normal)
+        if (crossProd.dot(normal) < 0)
+            return false;
+    }
     return true;
 }

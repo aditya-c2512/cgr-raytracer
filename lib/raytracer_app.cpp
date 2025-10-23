@@ -29,10 +29,13 @@ Color RayTracerApp::trace(const Ray& ray) const {
         if (hit) {
             if (record.getT() < minT) {
                 minT = record.getT();
-                color = record.getColor();
+                auto normal = record.getNormal();
+                color = Color(normal.getX(), normal.getY(), normal.getZ());
             }
         }
     }
+
+    logger->debug("Intersection point at ray " + std::to_string(minT));
 
     return color;
 }

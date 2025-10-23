@@ -10,39 +10,24 @@ Camera::Camera(const JsonObject &obj) {
                   originArray.at(1).as<double>(),
                   originArray.at(2).as<double>());
 
-    const auto lookAtArray = obj.at("gaze_direction").as<JsonArray>();
-    lookAt = Vec3(lookAtArray.at(0).as<double>(),
-                  lookAtArray.at(1).as<double>(),
-                  lookAtArray.at(2).as<double>());
+    const auto gazeDirectionArray = obj.at("gaze_direction").as<JsonArray>();
+    gazeDirection = Vec3(gazeDirectionArray.at(0).as<double>(),
+                  gazeDirectionArray.at(1).as<double>(),
+                  gazeDirectionArray.at(2).as<double>());
 
-    sensorWidth = obj.at("sensor_width_m").as<double>();
-    sensorHeight = obj.at("sensor_height_m").as<double>();
-    focalLength = obj.at("focal_length_m").as<double>();  // Already in meters
+    sensorWidth = obj.at("sensor_width_mm").as<double>() * 0.001;
+    sensorHeight = obj.at("sensor_height_mm").as<double>() * 0.001;
+    focalLength = obj.at("focal_length_mm").as<double>() * 0.001;
 
     imageWidth = obj.at("film_resolution").as<JsonObject>().at("x").as<int>();
     double imHeightCalc = imageWidth * sensorHeight / sensorWidth;
     imageHeight = (imHeightCalc < 1) ? obj.at("film_resolution").as<JsonObject>().at("y").as<int>()
                                      : static_cast<int>(imHeightCalc);
 
-    // --- Compute focal length from vertical FOV ---
-    // vertical_fov is in degrees
-    double vFOV = obj.at("vertical_fov").as<double>() * M_PI / 180.0;
-    double hFOV = obj.at("horizontal_fov").as<double>() * M_PI / 180.0;
-
-    // Compute focal length using vertical FOV (can switch to horizontal if desired)
-    double f_v = (sensorHeight / 2.0) / std::tan(vFOV / 2.0);
-    double f_h = (sensorWidth / 2.0) / std::tan(hFOV / 2.0);
-
-    // Pick the smaller to avoid cropping
-    focalLength = std::min(f_v, f_h);
-
-    forward = (lookAt - origin).normalize();
-
-    // Robust up vector: avoid colinear with forward
-    vUp = (std::fabs(forward.dot(Vec3(0,0,1))) > 0.999) ? Vec3(0,1,0) : Vec3(0,0,1);
-
-    right = forward.cross(vUp).normalize();
-    up = right.cross(forward).normalize();
+    vUp = {0, 0, 1};
+    forward = gazeDirection.normalize();
+    right = vUp.cross(forward).normalize();
+    up = forward.cross(right).normalize();
 }
 
 Point3 Camera::getOrigin() const {
@@ -58,15 +43,14 @@ int Camera::getImageHeight() const {
     return imageHeight;
 }
 
-Ray Camera::getRay(int px, int py) const {
+Ray Camera::getRay(const int px, const int py) const {
     double ndcX = (px + 0.5) / imageWidth;
     double ndcY = (py + 0.5) / imageHeight;
 
     double imagePlaneX = (ndcX - 0.5) * sensorWidth;
     double imagePlaneY = (0.5 - ndcY) * sensorHeight;
 
-    Vec3 pixelPos = origin + (forward * focalLength) + (right * imagePlaneX) + (up * imagePlaneY);
-    Vec3 dir = (pixelPos - origin).normalize();
+    Vec3 dir = (right * imagePlaneX) + (up * imagePlaneY) - (forward * focalLength);
 
     return {origin, dir};
 }

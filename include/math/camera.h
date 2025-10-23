@@ -14,7 +14,7 @@
 class Camera {
 private:
     Point3 origin;
-    Vec3 lookAt;
+    Vec3 gazeDirection;
     Vec3 vUp;
     Vec3 up, forward, right;
     double focalLength;

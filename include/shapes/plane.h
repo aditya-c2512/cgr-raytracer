@@ -21,6 +21,9 @@ public:
     explicit Plane(const JsonObject& shapeObject);
 
     bool intersect(const Ray &ray, double tMin, double tMax, Hit &record) override;
+
+private:
+    bool isInside(const Point3& p) const;
 };
 
 #endif //CGR_RAYTRACER_PLANE_H

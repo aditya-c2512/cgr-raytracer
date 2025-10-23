@@ -14,7 +14,7 @@ Cube::Cube(const JsonObject &shapeObject) {
     auto rotationArray = shapeObject.at("rotation_euler").as<JsonArray>();
     auto rotation = Vec3(rotationArray[0].as<double>(), rotationArray[1].as<double>(), rotationArray[2].as<double>());
 
-    auto sideLength = shapeObject.at("scale").as<double>() * 2;
+    auto sideLength = shapeObject.at("scale").as<double>();
     Matrix3x3 absR = Matrix3x3::rotationFromEulerZYX(rotation).abs();
     double h = sideLength / 2.0;
     Vec3 e = {h, h, h};
