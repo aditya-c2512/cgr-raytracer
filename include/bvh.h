@@ -21,7 +21,6 @@ public:
         : bBox(bBox), left(left), right(right), shape(shape) {}
     ~BVHNode() {
         delete bBox;
-        delete shape;
         delete left;
         delete right;
     }

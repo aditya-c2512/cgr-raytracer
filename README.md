@@ -26,7 +26,7 @@ make
 ```
 ### Run the project
 ```shell
-./cgr-raytrace --scene="../ASCII/Scene.json" --render-output="../Output/Scene.ppm"
+./cgr-raytrace --scene="../ASCII/Scene.json" --bvh="../ASCII/Scene_BVH.json" --render-output="../Output/Scene.ppm"
 ```
 
 ## Features Implemented
