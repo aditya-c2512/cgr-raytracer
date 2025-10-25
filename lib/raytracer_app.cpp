@@ -16,6 +16,7 @@ RayTracerApp::~RayTracerApp() {
 
 Color RayTracerApp::trace(const Ray& ray) const {
     auto shapes = scene->getShapes();
+    auto bvh = scene->getBVH();
     Color color = Color(0, 0, 0);
 
     const Vec3 unitDirection = ray.getDirection().normalize();
@@ -23,9 +24,21 @@ Color RayTracerApp::trace(const Ray& ray) const {
     color = Color(1.0, 1.0, 1.0) * (1.0 - a) + Color(0.5, 0.7, 1.0) * a;
 
     double minT = 500000;
-    for (auto shape : shapes) {
+    // for (auto shape : shapes) {
+    //     Hit record;
+    //     auto hit = shape.second->intersect(ray, 0, 500000, record);
+    //     if (hit) {
+    //         if (record.getT() < minT) {
+    //             minT = record.getT();
+    //             auto normal = record.getNormal();
+    //             color = Color(normal.getX(), normal.getY(), normal.getZ());
+    //         }
+    //     }
+    // }
+
+    for (auto bvhRoot: bvh->getRoots()) {
         Hit record;
-        auto hit = shape->intersect(ray, 0, 500000, record);
+        auto hit = bvhRoot->intersect(ray, 0, 500000, record);
         if (hit) {
             if (record.getT() < minT) {
                 minT = record.getT();

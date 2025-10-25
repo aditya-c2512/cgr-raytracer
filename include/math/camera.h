@@ -27,7 +27,6 @@ public:
     Point3 getOrigin() const;
     int getImageWidth() const;
     int getImageHeight() const;
-
     Vec3 getForward() const { return forward; }
 
     Ray getRay(int px, int py) const;

@@ -7,34 +7,56 @@
 
 #include "shapes/shape-factory.h"
 
-Scene::Scene(const std::string &path) {
-    JsonObject sceneObject = Json::parse(path);
-    auto objects = sceneObject["objects"].as<JsonArray>();
+Scene::Scene(const std::string& scenePath, const std::string& bvhPath) {
+    JsonObject sceneObject = Json::parse(scenePath);
+    auto sceneObjects = sceneObject["objects"].as<JsonArray>();
     JsonObject cameraObject;
-    for (const auto& obj: objects) {
+    for (const auto& obj: sceneObjects) {
         if (!obj.isObject()) continue;
+
+        auto objectName = obj.as<JsonObject>().at("name").as<std::string>();
 
         if (obj.as<JsonObject>().at("type").as<std::string>() == "CAMERA") {
             cameraObject = obj.as<JsonObject>();
         } else if (obj.as<JsonObject>().at("type").as<std::string>() == "LIGHT") {}
         else {
-            shapes.push_back(ShapeFactory::createShape(obj.as<JsonObject>()));
+            shapes[objectName] = ShapeFactory::createShape(obj.as<JsonObject>());
         }
     }
+
+    JsonObject bvhObject = Json::parse(bvhPath);
+    auto aabbObjects = bvhObject["objects"].as<JsonArray>();
+
+    std::vector<BVHNode*> roots;
+
+    for (const auto& aabbObject: aabbObjects) {
+        auto aabbName = aabbObject.as<JsonObject>().at("name").as<std::string>();
+        auto shape = shapes[aabbName];
+
+        auto* bBox = new AxisAlignedBBox(aabbObject.as<JsonObject>());
+        roots.push_back(new BVHNode(bBox, nullptr, nullptr, shape));
+    }
+
+    bvh = new BoundingVolumeHierarchy(roots);
 
     camera = new Camera(cameraObject);
 }
 
 Scene::~Scene() {
     delete camera;
-    for (auto shape : shapes) delete shape;
-    for (auto light : lights) delete light;
+    delete bvh;
+    for (const auto& shape : shapes) delete shapes.at(shape.first);
+    for (const auto light : lights) delete light;
 }
 
 Camera * Scene::getCamera() const {
     return camera;
 }
 
-std::vector<Shape*> Scene::getShapes() const {
+std::map<std::string, Shape*> Scene::getShapes() const {
     return shapes;
+}
+
+BoundingVolumeHierarchy * Scene::getBVH() const {
+    return bvh;
 }

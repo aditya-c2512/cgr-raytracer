@@ -10,20 +10,24 @@
 #include <shapes/shape.h>
 #include <math/camera.h>
 #include <utils/logger.h>
+#include <bvh.h>
+#include <map>
 
 class Scene {
 private:
     Logger *logger = Logger::getInstance();
     Camera* camera;
     std::vector<Light*> lights;
-    std::vector<Shape*> shapes;
+    std::map<std::string, Shape*> shapes;
+    BoundingVolumeHierarchy* bvh;
 
 public:
-    explicit Scene(const std::string& path);
+    explicit Scene(const std::string& scenePath, const std::string& bvhPath);
     ~Scene();
 
     Camera* getCamera() const;
-    std::vector<Shape*> getShapes() const;
+    std::map<std::string, Shape*> getShapes() const;
+    BoundingVolumeHierarchy* getBVH() const;
 };
 
 #endif //CGR_RAYTRACER_SCENE_H

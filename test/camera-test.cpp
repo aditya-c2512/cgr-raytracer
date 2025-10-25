@@ -22,8 +22,8 @@ testing::AssertionResult Vec3Near(const Vec3& a, const Vec3& b, double tol = EPS
 static JsonObject makeCameraJson() {
     JsonObject obj;
     obj["location"] = JsonValue(JsonArray{JsonValue(0.0), JsonValue(0.0), JsonValue(0.0)});
-    obj["gaze_direction"] = JsonValue(JsonArray{JsonValue(0.0), JsonValue(0.0), JsonValue(-1.0)});
-    obj["focal_length_m"] = JsonValue(1.0);
+    obj["gaze_direction"] = JsonValue(JsonArray{JsonValue(0.0), JsonValue(1.0), JsonValue(0.0)});
+    obj["focal_length_mm"] = JsonValue(1.0);
 
     JsonObject filmResObj;
     filmResObj["x"] = JsonValue(3);
@@ -31,8 +31,8 @@ static JsonObject makeCameraJson() {
     obj["film_resolution"] = JsonValue(filmResObj);
     obj["vertical_fov"] = JsonValue(67.38013505195957),
     obj["horizontal_fov"] = JsonValue(90.0);
-    obj["sensor_width_m"] = JsonValue(3.0);
-    obj["sensor_height_m"] = JsonValue(3.0);
+    obj["sensor_width_mm"] = JsonValue(3.0);
+    obj["sensor_height_mm"] = JsonValue(3.0);
     return obj;
 }
 
@@ -50,9 +50,8 @@ TEST(CameraTest, GetRayFromCenterIsForward) {
     JsonObject obj = makeCameraJson();
     Camera cam(obj);
 
-    // Middle pixel (2,1)
     Ray ray = cam.getRay(1, 1);
-    Vec3 dir = ray.getDirection().normalize();
+    Vec3 dir = ray.getDirection();
 
     EXPECT_NEAR(dir.dot(cam.getForward()), 1.0, 1e-6);
 }
@@ -62,9 +61,9 @@ TEST(CameraTest, RaysAtCornersHaveDifferentDirections) {
     Camera cam(obj);
 
     Ray tl = cam.getRay(0, 0);
-    Ray br = cam.getRay(3, 1);
+    Ray br = cam.getRay(2, 2);
 
-    EXPECT_LT(tl.getDirection().getZ(), 0);
+    EXPECT_GT(tl.getDirection().getZ(), 0);
     EXPECT_LT(br.getDirection().getZ(), 0);
     EXPECT_LT(tl.getDirection().getX(), 0);
     EXPECT_GT(br.getDirection().getX(), 0);

@@ -38,7 +38,7 @@ int main(int argc, char** argv) {
 
     logger->info("Starting the application.");
 
-    auto* scene = new Scene(args->get("scene").stringVal);
+    auto* scene = new Scene(args->get("scene").stringVal, args->get("bvh").stringVal);
 
     const auto* app = new RayTracerApp(scene, args->get("render-output").stringVal);
     app->run();

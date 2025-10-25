@@ -52,5 +52,5 @@ Ray Camera::getRay(const int px, const int py) const {
 
     Vec3 dir = (right * imagePlaneX) + (up * imagePlaneY) - (forward * focalLength);
 
-    return {origin, dir};
+    return {origin, dir.normalize()};
 }
