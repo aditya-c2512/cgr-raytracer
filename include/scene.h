@@ -20,6 +20,7 @@ private:
     std::vector<Light*> lights;
     std::map<std::string, Shape*> shapes;
     BoundingVolumeHierarchy* bvh;
+    bool accelerate;
 
 public:
     explicit Scene(const std::string& scenePath, const std::string& bvhPath);
@@ -28,6 +29,7 @@ public:
     Camera* getCamera() const;
     std::map<std::string, Shape*> getShapes() const;
     BoundingVolumeHierarchy* getBVH() const;
+    bool canAccelerate() const;
 };
 
 #endif //CGR_RAYTRACER_SCENE_H

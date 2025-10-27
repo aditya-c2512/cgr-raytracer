@@ -18,7 +18,7 @@ private:
 
 public:
     BVHNode(AxisAlignedBBox* bBox, BVHNode* left, BVHNode* right, Shape* shape)
-        : bBox(bBox), left(left), right(right), shape(shape) {}
+        : left(left), right(right), bBox(bBox), shape(shape) {}
     ~BVHNode() {
         delete bBox;
         delete left;

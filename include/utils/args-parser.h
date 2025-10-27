@@ -48,6 +48,7 @@ private:
 public:
     ArgsParser(int argc, char** argv);
     ArgsValue get(const std::string& argName);
+    bool contains(const std::string& argName) const;
 };
 
 #endif //CGR_RAYTRACER_ARGS_PARSER_H

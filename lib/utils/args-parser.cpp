@@ -51,3 +51,7 @@ ArgsValue ArgsParser::get(const std::string& argName) {
 
     return argMap.at(argName);
 }
+
+bool ArgsParser::contains(const std::string &argName) const {
+    return argMap.contains(argName);
+}

@@ -2,6 +2,7 @@
 // Created by Aditya Choubey on 19/09/2025.
 //
 
+#include <ranges>
 #include <raytracer_app.h>
 #include <utils/logger.h>
 #include <math/ray.h>
@@ -24,26 +25,29 @@ Color RayTracerApp::trace(const Ray& ray) const {
     color = Color(1.0, 1.0, 1.0) * (1.0 - a) + Color(0.5, 0.7, 1.0) * a;
 
     double minT = 500000;
-    // for (auto shape : shapes) {
-    //     Hit record;
-    //     auto hit = shape.second->intersect(ray, 0, 500000, record);
-    //     if (hit) {
-    //         if (record.getT() < minT) {
-    //             minT = record.getT();
-    //             auto normal = record.getNormal();
-    //             color = Color(normal.getX(), normal.getY(), normal.getZ());
-    //         }
-    //     }
-    // }
-
-    for (auto bvhRoot: bvh->getRoots()) {
-        Hit record;
-        auto hit = bvhRoot->intersect(ray, 0, 500000, record);
-        if (hit) {
-            if (record.getT() < minT) {
-                minT = record.getT();
-                auto normal = record.getNormal();
-                color = Color(normal.getX(), normal.getY(), normal.getZ());
+    if (scene->canAccelerate()) {
+        for (const auto bvhRoot: bvh->getRoots()) {
+            Hit record;
+            auto hit = bvhRoot->intersect(ray, 0, 500000, record);
+            if (hit) {
+                if (record.getT() < minT) {
+                    minT = record.getT();
+                    const auto& normal = record.getNormal();
+                    color = Color(normal.getX(), normal.getY(), normal.getZ());
+                }
+            }
+        }
+    }
+    else {
+        for (auto shape: shapes | std::views::values) {
+            Hit record;
+            auto hit = shape->intersect(ray, 0, 500000, record);
+            if (hit) {
+                if (record.getT() < minT) {
+                    minT = record.getT();
+                    const auto& normal = record.getNormal();
+                    color = Color(normal.getX(), normal.getY(), normal.getZ());
+                }
             }
         }
     }
@@ -64,7 +68,6 @@ void RayTracerApp::run() const {
             Ray ray = camera->getRay(x, y);
 
             Color pixelColor = trace(ray);
-            // Color pixelColor = Color(ray.getDirection().getX(), ray.getDirection().getY(), ray.getDirection().getZ());
 
             logger->debug("Color for pixel (" + std::to_string(x) + ", " + std::to_string(y) + "): " + pixelColor.toString());
 

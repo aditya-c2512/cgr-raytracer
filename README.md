@@ -2,7 +2,7 @@
 
 ## Building & Running
 ### Supported Environments
-- This project was developed and tested primarily on **MacOS (Sequoia 15.6.x)**.
+- This project was developed and tested primarily on **MacOS (Sequoia 15.6.x and Tahoe 26.0.x)**.
 - However, all libraries and frameworks employed are compatible with all **Linux** and **Windows** systems.
 - The project is developed using **C++20**, utilising **CMake** as the build tool.
 
@@ -35,6 +35,12 @@ make
 - Image I/O Class for .ppm files. Enables main rendering loop to render scenes to frames.
 - Virtual pinhole camera class to capture rays through each pixel for the start of raytracing. Configurable via the Blender exported JSON file.
 - Simple Scene importer to initialise all shapes and meshes that will be raytraced.
+
+### Module 2
+- Supported JSON imports and ray-shape intersection routines for spheres, planes, cubes, and Axis-Aligned Bounding Boxes (used in BVH).
+- Structured the shapes as implementation of Shape interface, and used a Shape Factory to abstract the shape instantiation procedure.
+- Bounded Volume Hierarchy and Axis-Aligned Bounded Box for optimising ray-scene intersection tests.
+- BVH is made from a BVH JSON file. However, if a path is not provided, the renderer doesn't use acceleration structures while rendering.
 
 ## Coding Conventions
 ### Logs

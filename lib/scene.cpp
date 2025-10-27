@@ -24,20 +24,26 @@ Scene::Scene(const std::string& scenePath, const std::string& bvhPath) {
         }
     }
 
-    JsonObject bvhObject = Json::parse(bvhPath);
-    auto aabbObjects = bvhObject["objects"].as<JsonArray>();
+    if (!bvhPath.empty()) {
+        JsonObject bvhObject = Json::parse(bvhPath);
+        auto aabbObjects = bvhObject["objects"].as<JsonArray>();
 
-    std::vector<BVHNode*> roots;
+        std::vector<BVHNode*> roots;
 
-    for (const auto& aabbObject: aabbObjects) {
-        auto aabbName = aabbObject.as<JsonObject>().at("name").as<std::string>();
-        auto shape = shapes[aabbName];
+        for (const auto& aabbObject: aabbObjects) {
+            auto aabbName = aabbObject.as<JsonObject>().at("name").as<std::string>();
+            auto shape = shapes[aabbName];
 
-        auto* bBox = new AxisAlignedBBox(aabbObject.as<JsonObject>());
-        roots.push_back(new BVHNode(bBox, nullptr, nullptr, shape));
+            auto* bBox = new AxisAlignedBBox(aabbObject.as<JsonObject>());
+            roots.push_back(new BVHNode(bBox, nullptr, nullptr, shape));
+        }
+
+        bvh = new BoundingVolumeHierarchy(roots);
+        accelerate = true;
     }
-
-    bvh = new BoundingVolumeHierarchy(roots);
+    else {
+        accelerate = false;
+    }
 
     camera = new Camera(cameraObject);
 }
@@ -59,4 +65,8 @@ std::map<std::string, Shape*> Scene::getShapes() const {
 
 BoundingVolumeHierarchy * Scene::getBVH() const {
     return bvh;
+}
+
+bool Scene::canAccelerate() const {
+    return accelerate;
 }

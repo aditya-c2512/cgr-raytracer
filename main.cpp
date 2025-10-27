@@ -31,14 +31,23 @@ int main(int argc, char** argv) {
 
     auto* args = new ArgsParser(argc, argv);
 
-    if (args->get("help").boolVal) {
+    if (args->contains("help")) {
         printHelp();
         return EXIT_SUCCESS;
     }
 
     logger->info("Starting the application.");
 
-    auto* scene = new Scene(args->get("scene").stringVal, args->get("bvh").stringVal);
+    std::string bvhPath;
+    if (!args->contains("bvh")) {
+        logger->warn("No BVH JSON file mentioned. Rendering without acceleration.");
+        bvhPath = "";
+    }
+    else {
+        bvhPath = args->get("bvh").stringVal;
+    }
+
+    auto* scene = new Scene(args->get("scene").stringVal, bvhPath);
 
     const auto* app = new RayTracerApp(scene, args->get("render-output").stringVal);
     app->run();
