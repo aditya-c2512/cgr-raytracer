@@ -36,20 +36,17 @@ namespace mathutils{
         double u1 = rng();
         double u2 = rng();
         double phi = 2.0 * M_PI * u1;
-        // cosTheta distribution: cosTheta = u2^(1/(s+1))
+
         double cosTheta = pow(u2, 1.0 / (exponent + 1.0));
         double sinTheta = sqrt(std::max(0.0, 1.0 - cosTheta * cosTheta));
         double x = sinTheta * cos(phi);
         double y = sinTheta * sin(phi);
-        double z = cosTheta; // local-space z
+        double z = cosTheta;
 
-        // Create basis where z-axis = axis
         Vec3 tangent, bitangent;
         makeBasis(axis, tangent, bitangent);
-        // transform local (x,y,z) to world: x*tangent + y*bitangent + z*axis
         Vec3 d = (tangent * x + bitangent * y + axis * z).normalize();
 
-        // PDF of sampled direction (around axis) for Phong lobe
         outPdf = (exponent + 1.0) / (2.0 * M_PI) * pow(std::max(0.0, axis.dot(d)), exponent);
         return d;
     }

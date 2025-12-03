@@ -63,11 +63,9 @@ void Logger::error(const std::string& message, const std::source_location& locat
 }
 
 std::string Logger::getCurrentDateTime() {
-    // Get current time
     const auto now = std::chrono::system_clock::now();
     const std::time_t now_c = std::chrono::system_clock::to_time_t(now);
 
-    // Format to YYYY-MM-DD HH:MM:SS
     std::ostringstream oss;
     oss << std::put_time(std::localtime(&now_c), "%Y-%m-%d %H:%M:%S");
     return oss.str();

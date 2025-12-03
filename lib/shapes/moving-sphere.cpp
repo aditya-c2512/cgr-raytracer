@@ -22,7 +22,6 @@ MovingSphere::MovingSphere(const JsonObject &shapeObject) {
 }
 
 bool MovingSphere::intersect(const Ray &ray, double tMin, double tMax, Hit &record) {
-    // Compute interpolated center based on ray time
     Vec3 centerAtTime = startCenter + (endCenter - startCenter) * ray.getTime();
 
     const Vec3 originToCenter = centerAtTime - ray.getOrigin();
@@ -56,7 +55,6 @@ bool MovingSphere::intersect(const Ray &ray, double tMin, double tMax, Hit &reco
     const auto phi = std::acos(normal.getY());
 
     record.setUV((theta + M_PI) / (2 * M_PI), phi / M_PI);
-    // logger->debug("UV coordinates: " + std::to_string(record.getU()) + "," + std::to_string(record.getV()));
 
     return true;
 }

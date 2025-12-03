@@ -64,9 +64,6 @@ Color PpmImage::getPixel(int x, int y) {
 
 void PpmImage::setPixel(const int x, const int y, const Color &color) {
     pixels[y * width + x] = convertToGamma(color);
-    // logger->debug("Set pixel (" + std::to_string(x) + ", " + std::to_string(y) +
-    // ") to R:" + std::to_string(color.getRed()) + ", G:" + std::to_string(color.getGreen())
-    // + ", B:" + std::to_string(color.getBlue()));
 }
 
 void PpmImage::write() {

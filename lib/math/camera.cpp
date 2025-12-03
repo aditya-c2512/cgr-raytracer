@@ -48,7 +48,6 @@ int Camera::getImageHeight() const {
 }
 
 Ray Camera::getRay(const int px, const int py) const {
-    // pixel jitter for anti-aliasing
     auto offset = sampleSquare();
     double ndcX = (px + offset.getX() + 0.5) / imageWidth;
     double ndcY = (py + offset.getY() + 0.5) / imageHeight;
@@ -56,21 +55,16 @@ Ray Camera::getRay(const int px, const int py) const {
     double imagePlaneX = (ndcX - 0.5) * sensorWidth;
     double imagePlaneY = (0.5 - ndcY) * sensorHeight;
 
-    // direction from camera for perfect pinhole ray
     Vec3 baseDir = (right * imagePlaneX) + (up * imagePlaneY) - (forward * focalLength);
     baseDir = baseDir.normalize();
 
-    // Point where this ray intersects the focus plane
     Point3 focusPoint = origin + baseDir * focusDistance;
 
-    // Sample random point on lens to simulate aperture
     Vec3 lensSample = sampleDisk() * lensRadius;
     Point3 lensOrigin = origin + right * lensSample.getX() + up * lensSample.getY();
 
-    // New direction passing through focus point
     Vec3 defocusDir = (focusPoint - lensOrigin).normalize();
 
-    // Time for motion blur if you support it
     double time = mathutils::getRandom(shutterOpen, shutterClose);
 
     return Ray(lensOrigin, defocusDir, time);

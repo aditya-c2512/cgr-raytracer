@@ -56,7 +56,7 @@ namespace Json
 
         JsonValue parseObject() {
             JsonObject obj;
-            get(); // consume '{'
+            get();
             skipWhitespace();
             if (peek() == '}') { get(); return JsonValue(obj); }
 
@@ -77,7 +77,7 @@ namespace Json
 
         JsonValue parseArray() {
             JsonArray arr;
-            get(); // consume '['
+            get();
             skipWhitespace();
             if (peek() == ']') { get(); return JsonValue(arr); }
 

@@ -21,20 +21,16 @@ bool AxisAlignedBBox::intersect(const Ray &ray, double tMin, double tMax, Hit &r
         double t0 = (minPoint[i] - ray.getOrigin()[i]) * invD;
         double t1 = (maxPoint[i] - ray.getOrigin()[i]) * invD;
 
-        // Swap if ray direction is negative
         if (invD < 0.0)
             std::swap(t0, t1);
 
-        // Narrow down intersection interval
         tMin = std::max(tMin, t0);
         tMax = std::min(tMax, t1);
 
-        // No intersection
         if (tMax <= tMin)
             return false;
     }
 
-    // If we reach here, the ray intersects the box between tMin and tMax
     record.setT(tMin);
     record.setPoint(ray.at(tMin));
 

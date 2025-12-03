@@ -25,7 +25,6 @@ private:
     mutable mathutils::RNG rng;
 
 public:
-    // Initialisation
     RayTracerApp(Scene* scene, const std::string& filepath, const int& maxDepth, const int& lightSamples,
     const int& glossySamples, int numThreads);
     ~RayTracerApp();

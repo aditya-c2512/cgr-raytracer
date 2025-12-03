@@ -34,9 +34,9 @@ public:
 
     bool intersect(const Ray &ray, double tMin, double tMax, Hit &record) override {
         if (bBox != nullptr) {
-            Hit bboxHit; // temporary – ignore recorded values
+            Hit bboxHit;
             if (!bBox->intersect(ray, tMin, tMax, bboxHit)) {
-                return false; // ray does not enter this BVH subtree
+                return false;
             }
         }
 
@@ -45,7 +45,7 @@ public:
         if (shape != nullptr) {
             if (shape->intersect(ray, tMin, tMax, record)) {
                 hitAnything = true;
-                tMax = record.getT(); // ⬅ tighten bounds when finding closer hit
+                tMax = record.getT();
             }
         }
 
@@ -67,7 +67,6 @@ public:
     }
 
     bool occluded(const Ray& ray, double tMin, double tMax) const {
-        // AABB check first (ignore hit-record output)
         if (bBox != nullptr) {
             Hit tmp;
             if (!bBox->intersect(ray, tMin, tMax, tmp)) {
@@ -75,7 +74,6 @@ public:
             }
         }
 
-        // If this is a leaf with real geometry
         if (shape != nullptr) {
             Hit tmp; // discarded
             if (shape->intersect(ray, tMin, tMax, tmp)) {
@@ -83,7 +81,6 @@ public:
             }
         }
 
-        // Traverse children – early exit allowed
         if (left && left->occluded(ray, tMin, tMax)) {
             return true;
         }
@@ -112,10 +109,8 @@ public:
     }
 
     BVHNode* buildNode(JsonObject nodeObj, const std::map<std::string, Shape*>& shapes) {
-        // Empty object → no node here
         if (nodeObj.size() == 0) return nullptr;
 
-        // Parse AABB
         double xMin = nodeObj["xMin"].as<double>();
         double xMax = nodeObj["xMax"].as<double>();
         double yMin = nodeObj["yMin"].as<double>();
@@ -128,14 +123,12 @@ public:
             Vec3(xMax, yMax, zMax)
         );
 
-        // Detect a leaf node if "shape" exists
         Shape* shape = nullptr;
         if (nodeObj.contains("shape")) {
             std::string shapeName = nodeObj["shape"].as<std::string>();
             shape = shapes.at(shapeName);
         }
 
-        // Recursively build children (empty JSON = nullptr)
         JsonObject leftObj  = nodeObj["left"].as<JsonObject>();
         JsonObject rightObj = nodeObj["right"].as<JsonObject>();
 
@@ -161,7 +154,7 @@ public:
     bool occluded(const Ray& ray, double tMin, double tMax) const {
         for (auto root : roots) {
             if (root->occluded(ray, tMin, tMax)) {
-                return true; // early exit: any blocker found
+                return true;
             }
         }
         return false;

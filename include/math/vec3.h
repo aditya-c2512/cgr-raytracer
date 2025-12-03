@@ -13,12 +13,10 @@ private:
     double x, y, z;
 
 public:
-    // Initialisation
     Vec3();
     Vec3(double x, double y, double z);
     Vec3(const Vec3& v);
 
-    // Getter functions
     double getX() const;
     double getY() const;
     double getZ() const;

@@ -36,7 +36,6 @@ BlinnPhongMaterial::BlinnPhongMaterial(JsonObject &materialJson) {
 
 bool BlinnPhongMaterial::scatter(const Ray &ray, const Hit &record, Color &attenuation, Ray &scatteredRay) const {
     if (dielectric == 1) {
-        // Dielectric material: refract or reflect
         Color dielectricAttenuation;
         Ray dielectricScatter;
         if (dielectricMaterial.scatter(ray, record, dielectricAttenuation, dielectricScatter)) {
@@ -47,7 +46,6 @@ bool BlinnPhongMaterial::scatter(const Ray &ray, const Hit &record, Color &atten
         return false;
     }
     if (specularIntensity > 0.0) {
-        // Metallic reflection
         Color metallicAttenuation;
         Ray metallicScatter;
         if (metallic.scatter(ray, record, metallicAttenuation, metallicScatter)) {
@@ -58,7 +56,6 @@ bool BlinnPhongMaterial::scatter(const Ray &ray, const Hit &record, Color &atten
         return false;
     }
 
-    // Diffuse material: no recursive ray
     return false;
 }
 
@@ -82,22 +79,16 @@ Color BlinnPhongMaterial::brdf(const Hit &hit, const Vec3 &wi, const Vec3 &wo) c
 }
 
 Vec3 BlinnPhongMaterial::sampleGlossy(const Hit &hit, const Vec3 &wo, double &outPdf, const mathutils::RNG &rng) const {
-    // perfect reflection direction R for incoming direction = -wo (wo points toward camera)
     Vec3 N = hit.getNormal();
-    Vec3 V = -wo; // incoming direction to surface (from shading convention)
-    Vec3 R = V.reflect(N).normalize();  // reflect incoming to get mirror direction
+    Vec3 V = -wo;
+    Vec3 R = V.reflect(N).normalize();
 
-    // Use shininess as Phong exponent. Larger shininess => narrower lobe.
     double exponent = std::max(1.0, shininess);
 
-    // Sample around R using Phong lobe
     Vec3 sampledDir = mathutils::samplePhongLobe(R, exponent, rng, outPdf);
 
-    // Ensure outgoing is in same hemisphere as normal (avoid below-surface)
     if (sampledDir.dot(N) < 0.0) {
-        // flip or project -- easiest: mirror with respect to normal
         sampledDir = (sampledDir - N * 2.0 * sampledDir.dot(N)).normalize();
-        // recompute pdf (approximate) — we'll keep outPdf same for simplicity
     }
     return sampledDir;
 }

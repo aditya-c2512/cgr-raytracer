@@ -48,12 +48,10 @@ bool Cube::intersect(const Ray &ray, double tMin, double tMax, Hit &record) {
         }
         t1 = std::min(t1, tFar);
 
-        // If no overlap, no hit
         if (t1 <= t0)
             return false;
     }
 
-    // At this point, t0 is the first intersection distance
     record.setT(t0);
     record.setPoint(ray.at(t0));
     record.setFaceNormal(ray, normal);

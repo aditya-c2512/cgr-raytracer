@@ -22,7 +22,7 @@ Plane::Plane(const JsonObject &shapeObject) {
 bool Plane::intersect(const Ray &ray, double tMin, double tMax, Hit &record) {
     double denom = ray.getDirection().dot(normal);
     if (std::fabs(denom) < 1e-8)
-        return false;  // Parallel to plane
+        return false;
 
     double t = (point - ray.getOrigin()).dot(normal) / denom;
     if (t < tMin || t > tMax)
@@ -30,7 +30,6 @@ bool Plane::intersect(const Ray &ray, double tMin, double tMax, Hit &record) {
 
     Point3 hitPoint = ray.getOrigin() + ray.getDirection() * t;
 
-    // Check if inside the quadrilateral
     if (!isInside(hitPoint))
         return false;
 
@@ -50,7 +49,6 @@ bool Plane::isInside(const Point3 &p) const {
         Vec3 toPoint = p - a;
         Vec3 crossProd = edge.cross(toPoint);
 
-        // If point is outside (cross product not facing same side as normal)
         if (crossProd.dot(normal) < 0)
             return false;
     }

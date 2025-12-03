@@ -37,12 +37,10 @@ public:
     }
 
     static Matrix3x3 rotationFromEulerZYX(const Vec3& euler) {
-        // roll (x), pitch (y), yaw (z)
         double cr = std::cos(euler.getX()), sr = std::sin(euler.getX());
         double cp = std::cos(euler.getY()), sp = std::sin(euler.getY());
         double cy = std::cos(euler.getZ()), sy = std::sin(euler.getZ());
 
-        // Rotation matrices
         Matrix3x3 Rz ={{
                 { cy, -sy, 0 },
                 { sy,  cy, 0 },
@@ -58,7 +56,7 @@ public:
             { 0,  cr, -sr },
             { 0,  sr,  cr }
         }};
-        return Rz * Ry * Rx; // ZYX order
+        return Rz * Ry * Rx;
     }
 
     Matrix3x3 operator*(const Matrix3x3& o) const {

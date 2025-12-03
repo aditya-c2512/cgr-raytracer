@@ -52,6 +52,7 @@ int main(int argc, char** argv) {
     const auto* app = new RayTracerApp(scene, args->get("render-output").stringVal,
         args->get("max-depth").integerNum, args->get("light-samples").integerNum,
         args->get("glossy-samples").integerNum, args->get("nthreads").integerNum);
+
     app->run();
 
     logger->info("Application finished.");

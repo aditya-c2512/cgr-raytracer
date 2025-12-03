@@ -54,7 +54,7 @@ public:
 class RectLight : public Light {
 public:
     Point3 center;
-    Vec3 u, v;  // orientation vectors
+    Vec3 u, v;
     double width, height;
     Color emitted;
 
@@ -62,11 +62,9 @@ public:
     mutable std::uniform_real_distribution<double> uni {0.0, 1.0};
 
     RectLight(JsonObject& obj) {
-        // Parse center
         auto c = obj["location"].as<JsonArray>();
         center = Point3(c[0].as<double>(), c[1].as<double>(), c[2].as<double>());
 
-        // Parse orientation vectors
         auto uArr = obj["u"].as<JsonArray>();
         auto vArr = obj["v"].as<JsonArray>();
         u = Vec3(uArr[0].as<double>(), uArr[1].as<double>(), uArr[2].as<double>()).normalize();

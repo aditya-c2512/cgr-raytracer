@@ -47,7 +47,6 @@ bool Sphere::intersect(const Ray& ray, double tMin, double tMax, Hit& record) {
     const auto phi = std::acos(normal.getY());
 
     record.setUV((theta + M_PI) / (2 * M_PI), phi / M_PI);
-    // logger->debug("UV coordinates: " + std::to_string(record.getU()) + "," + std::to_string(record.getV()));
 
     return true;
 }

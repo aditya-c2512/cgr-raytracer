@@ -52,7 +52,6 @@ Color RayTracerApp::trace(const Ray& ray, int renderDepth) const {
                             Vec3 wi = Lpos - record.getPoint().normalize();
                             double dist = (Lpos - record.getPoint()).length();
 
-                            // Shadow ray
                             Ray shadowRay(record.getPoint() + record.getNormal() * 1e-5, wi);
                             double maxDist = (Lpos - record.getPoint()).length();
 
@@ -71,9 +70,7 @@ Color RayTracerApp::trace(const Ray& ray, int renderDepth) const {
 
                     hitColor = hitColor / lightSamples;
 
-                    // After you compute hitColor from direct lighting and before assigning color = hitColor:
                     if (renderDepth > 0) {
-                        // check if material wants dielectrics / metals handled by existing scatter()
                         Ray scattered;
                         Color attenuation;
                         if (record.getMaterial()->isDielectric()) {
@@ -82,47 +79,32 @@ Color RayTracerApp::trace(const Ray& ray, int renderDepth) const {
                             }
                         }
                         else if (record.getMaterial()->isGlossy()) {
-                            // Distributed glossy sampling
-                            Color glossyAccum(0.0, 0.0, 0.0);
-                            // outgoing vector from surface to camera
+                            Color glossy(0.0, 0.0, 0.0);
                             Vec3 wo = (ray.getOrigin() - record.getPoint()).normalize();
 
                             for (int g = 0; g < glossySamples; ++g) {
                                 double pdf;
                                 Vec3 sampledDir = record.getMaterial()->sampleGlossy(record, wo, pdf, rng);
 
-                                // spawn reflection ray
                                 Ray refl(record.getPoint() + record.getNormal() * 0.001, sampledDir);
 
-                                // trace recursively
                                 Color Li = trace(refl, renderDepth - 1);
 
-                                // weight by cosine term and BRDF factor:
-                                // we already sampled according to Phong pdf p(omega)
-                                // use a simple Monte Carlo estimator: (specularTerm * Li * cos(N,wi)) / p
                                 double cosNwi = std::max(0.0, record.getNormal().dot(sampledDir));
 
-                                // Specular BRDF factor (Phong): ks * (s+2)/(2π) * cos^s
-                                // With sampling PDF p = (s+1)/(2π) * cos^s  => ratio simplifies roughly to ks * (s+2)/(s+1) * (2π cancel)
-                                // For a practical and stable estimator we use the following:
                                 double s = std::max(1.0, record.getMaterial()->getShininess());
                                 double ks = record.getMaterial()->getSpecularIntensity();
 
-                                // Compute a simple weight: ks * cosNwi / pdf
-                                // (This is a pragmatic estimator; you may substitute the exact BRDF/pdfs if you want)
                                 double weight = (pdf > 0.0) ? (ks * cosNwi / pdf) : 0.0;
 
-                                glossyAccum = glossyAccum + Li * weight;
+                                glossy = glossy + Li * weight;
                             }
 
-                            // average glossy contribution
-                            glossyAccum = glossyAccum / static_cast<double>(glossySamples);
+                            glossy = glossy / static_cast<double>(glossySamples);
 
-                            // Add to hit color
-                            hitColor = hitColor + glossyAccum;
+                            hitColor = hitColor + glossy;
                         }
                         else {
-                            // Non-glossy diffuse / no recursion
                             if (record.getMaterial()->scatter(ray, record, attenuation, scattered)) {
                                 hitColor = hitColor + attenuation * trace(scattered, renderDepth - 1);
                             }
@@ -155,7 +137,6 @@ Color RayTracerApp::trace(const Ray& ray, int renderDepth) const {
                             Vec3 wi = Lpos - record.getPoint().normalize();
                             double dist = (Lpos - record.getPoint()).length();
 
-                            // Shadow ray
                             Ray shadow(record.getPoint() + record.getNormal() * 0.001, wi);
                             Hit shadowHit;
                             bool hitShadow = false;
@@ -177,9 +158,7 @@ Color RayTracerApp::trace(const Ray& ray, int renderDepth) const {
 
                     hitColor = hitColor / lightSamples;
 
-                    // After you compute hitColor from direct lighting and before assigning color = hitColor:
                     if (renderDepth > 0) {
-                        // check if material wants dielectrics / metals handled by existing scatter()
                         Ray scattered;
                         Color attenuation;
                         if (record.getMaterial()->isDielectric()) {
@@ -188,47 +167,32 @@ Color RayTracerApp::trace(const Ray& ray, int renderDepth) const {
                             }
                         }
                         else if (record.getMaterial()->isGlossy()) {
-                            // Distributed glossy sampling
-                            Color glossyAccum(0.0, 0.0, 0.0);
-                            // outgoing vector from surface to camera
+                            Color glossy(0.0, 0.0, 0.0);
                             Vec3 wo = (ray.getOrigin() - record.getPoint()).normalize();
 
                             for (int g = 0; g < glossySamples; ++g) {
                                 double pdf;
                                 Vec3 sampledDir = record.getMaterial()->sampleGlossy(record, wo, pdf, rng);
 
-                                // spawn reflection ray
                                 Ray refl(record.getPoint() + record.getNormal() * 0.001, sampledDir);
 
-                                // trace recursively
                                 Color Li = trace(refl, renderDepth - 1);
 
-                                // weight by cosine term and BRDF factor:
-                                // we already sampled according to Phong pdf p(omega)
-                                // use a simple Monte Carlo estimator: (specularTerm * Li * cos(N,wi)) / p
                                 double cosNwi = std::max(0.0, record.getNormal().dot(sampledDir));
 
-                                // Specular BRDF factor (Phong): ks * (s+2)/(2π) * cos^s
-                                // With sampling PDF p = (s+1)/(2π) * cos^s  => ratio simplifies roughly to ks * (s+2)/(s+1) * (2π cancel)
-                                // For a practical and stable estimator we use the following:
                                 double s = std::max(1.0, record.getMaterial()->getShininess());
                                 double ks = record.getMaterial()->getSpecularIntensity();
 
-                                // Compute a simple weight: ks * cosNwi / pdf
-                                // (This is a pragmatic estimator; you may substitute the exact BRDF/pdfs if you want)
                                 double weight = (pdf > 0.0) ? (ks * cosNwi / pdf) : 0.0;
 
-                                glossyAccum = glossyAccum + Li * weight;
+                                glossy = glossy + Li * weight;
                             }
 
-                            // average glossy contribution
-                            glossyAccum = glossyAccum / glossySamples;
+                            glossy = glossy / glossySamples;
 
-                            // Add to hit color
-                            hitColor = hitColor + glossyAccum;
+                            hitColor = hitColor + glossy;
                         }
                         else {
-                            // Non-glossy diffuse / no recursion
                             if (record.getMaterial()->scatter(ray, record, attenuation, scattered)) {
                                 hitColor = hitColor + attenuation * trace(scattered, renderDepth - 1);
                             }
@@ -241,41 +205,8 @@ Color RayTracerApp::trace(const Ray& ray, int renderDepth) const {
         }
     }
 
-    // logger->debug("Intersection point at ray " + std::to_string(minT));
     return color;
 }
-
-// void RayTracerApp::run() const {
-//     logger->info("Starting up Raytracer App.");
-//
-//     Camera* camera = scene->getCamera();
-//
-//     logger->info("Starting Rendering Stage");
-//
-//     for (int y = 0; y < camera->getImageHeight(); y++) {
-//         for (int x = 0; x < camera->getImageWidth(); x++) {
-//             Color pixelColor = {};
-//             auto samplesPerPixel = camera->getSamplesPerPixel();
-//
-//             for (int sample = 0; sample < samplesPerPixel; sample++) {
-//                 Ray ray = camera->getRay(x, y);
-//                 pixelColor = pixelColor + trace(ray, maxDepth);
-//             }
-//
-//             pixelColor = pixelColor / samplesPerPixel;
-//             // logger->debug("Color for pixel (" + std::to_string(x) + ", " + std::to_string(y) + "): " + pixelColor.toString());
-//             image->setPixel(x, y, pixelColor);
-//         }
-//
-//         logger->info("Rendered Scanline #" + std::to_string(y+1));
-//     }
-//
-//     logger->info("Finished Rendering Stage");
-//
-//     image->write();
-//
-//     logger->info("Finished up Raytracer App.");
-// }
 
 void RayTracerApp::run() const {
     logger->info("Starting up Raytracer App.");
@@ -289,7 +220,6 @@ void RayTracerApp::run() const {
 
     std::atomic<int> nextScanline{0}; // a thread-safe counter
 
-    // Worker code: claim scanlines dynamically
     auto worker = [&]() {
         while (true) {
             int y = nextScanline.fetch_add(1);
@@ -309,14 +239,12 @@ void RayTracerApp::run() const {
         }
     };
 
-    // Launch threads
     std::vector<std::thread> workers;
     workers.reserve(numThreads);
     for (int i = 0; i < numThreads; ++i) {
         workers.emplace_back(worker);
     }
 
-    // Wait for completion
     for (auto &t : workers) t.join();
 
     logger->info("Finished Rendering Stage");

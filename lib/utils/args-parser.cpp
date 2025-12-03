@@ -12,7 +12,6 @@ ArgsParser::ArgsParser(int argc, char **argv) {
             continue;
         }
 
-        // Strip leading "--"
         arg = arg.substr(2);
         auto pos = arg.find('=');
         if (pos == std::string::npos) {
