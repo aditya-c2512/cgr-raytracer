@@ -7,7 +7,7 @@
 
 #include "shapes/shape-factory.h"
 
-Scene::Scene(const std::string& scenePath, const std::string& bvhPath) {
+Scene::Scene(const std::string& scenePath, const std::string& bvhPath, double focusDistance) {
     JsonObject sceneObject = Json::parse(scenePath);
     auto sceneObjects = sceneObject["objects"].as<JsonArray>();
     JsonObject cameraObject;
@@ -18,7 +18,17 @@ Scene::Scene(const std::string& scenePath, const std::string& bvhPath) {
 
         if (obj.as<JsonObject>().at("type").as<std::string>() == "CAMERA") {
             cameraObject = obj.as<JsonObject>();
-        } else if (obj.as<JsonObject>().at("type").as<std::string>() == "LIGHT") {}
+        }
+        else if (obj.as<JsonObject>().at("type").as<std::string>() == "POINT_LIGHT") {
+            auto pointLightObject = obj.as<JsonObject>();
+            auto* light = new PointLight(pointLightObject);
+            lights.push_back(light);
+        }
+        else if (obj.as<JsonObject>().at("type").as<std::string>() == "AREA_LIGHT") {
+            auto rectLightObject = obj.as<JsonObject>();
+            auto* light = new RectLight(rectLightObject);
+            lights.push_back(light);
+        }
         else {
             shapes[objectName] = ShapeFactory::createShape(obj.as<JsonObject>());
         }
@@ -26,33 +36,20 @@ Scene::Scene(const std::string& scenePath, const std::string& bvhPath) {
 
     if (!bvhPath.empty()) {
         JsonObject bvhObject = Json::parse(bvhPath);
-        auto aabbObjects = bvhObject["objects"].as<JsonArray>();
-
-        std::vector<BVHNode*> roots;
-
-        for (const auto& aabbObject: aabbObjects) {
-            auto aabbName = aabbObject.as<JsonObject>().at("name").as<std::string>();
-            auto shape = shapes[aabbName];
-
-            auto* bBox = new AxisAlignedBBox(aabbObject.as<JsonObject>());
-            roots.push_back(new BVHNode(bBox, nullptr, nullptr, shape));
-        }
-
-        bvh = new BoundingVolumeHierarchy(roots);
+        bvh = new BoundingVolumeHierarchy(bvhObject, shapes);
         accelerate = true;
     }
     else {
         accelerate = false;
     }
 
-    camera = new Camera(cameraObject);
+    camera = new Camera(cameraObject, focusDistance);
 }
 
 Scene::~Scene() {
     delete camera;
     delete bvh;
     for (const auto& shape : shapes) delete shapes.at(shape.first);
-    for (const auto light : lights) delete light;
 }
 
 Camera * Scene::getCamera() const {
@@ -65,6 +62,10 @@ std::map<std::string, Shape*> Scene::getShapes() const {
 
 BoundingVolumeHierarchy * Scene::getBVH() const {
     return bvh;
+}
+
+std::vector<Light*>& Scene::getLights() {
+    return lights;
 }
 
 bool Scene::canAccelerate() const {

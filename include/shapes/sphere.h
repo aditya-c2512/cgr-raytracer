@@ -11,8 +11,10 @@
 
 class Sphere: public Shape {
 private:
+    Logger* logger = Logger::getInstance();
     Vec3 center;
     double radius;
+    std::shared_ptr<Material> material;
 
 public:
     Sphere(const Vec3& center, double radius);

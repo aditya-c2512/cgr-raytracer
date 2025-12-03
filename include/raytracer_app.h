@@ -11,19 +11,26 @@
 
 #include "scene.h"
 #include "math/ray.h"
+#include "math/utils.h"
 
 class RayTracerApp {
 private:
     Logger* logger = Logger::getInstance();
     PpmImage* image;
     Scene* scene;
+    int maxDepth;
+    int lightSamples = 4;
+    int glossySamples = 4;
+    int numThreads = 1;
+    mutable mathutils::RNG rng;
 
 public:
     // Initialisation
-    RayTracerApp(Scene* scene, const std::string& outputPath);
+    RayTracerApp(Scene* scene, const std::string& filepath, const int& maxDepth, const int& lightSamples,
+    const int& glossySamples, int numThreads);
     ~RayTracerApp();
 
-    Color trace(const Ray& ray) const;
+    Color trace(const Ray& ray, int renderDepth) const;
     void run() const;
 };
 

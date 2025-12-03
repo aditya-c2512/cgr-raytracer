@@ -7,6 +7,8 @@
 #include <shapes/cube.h>
 #include <shapes/plane.h>
 
+#include "shapes/moving-sphere.h"
+
 Logger* ShapeFactory::logger = Logger::getInstance();
 
 Shape* ShapeFactory::createShape(const JsonObject &shapeObject) {
@@ -15,7 +17,7 @@ Shape* ShapeFactory::createShape(const JsonObject &shapeObject) {
         case SPHERE:
             return new Sphere(shapeObject);
         case PLANE:
-            return new Plane(Point3(0,0,0), Vec3(0,0,1));
+            return new Plane(shapeObject);
         case CUBE:
             return new Cube(shapeObject);
         case CYLINDER:
@@ -24,6 +26,8 @@ Shape* ShapeFactory::createShape(const JsonObject &shapeObject) {
             return {};
         case MESH:
             return {};
+        case MOVING_SPHERE:
+            return new MovingSphere(shapeObject);
         default:
             logger->warn("Unknown shape type: " + shapeTypeValue);
             return {};

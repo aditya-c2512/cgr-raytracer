@@ -20,16 +20,25 @@ private:
     double focalLength;
     int imageWidth, imageHeight;
     double sensorWidth, sensorHeight;
+    int samplesPerPixel;
+    double shutterOpen, shutterClose;
+    double lensRadius = 0.01;
+    double focusDistance = 3.0;
 
 public:
-    explicit Camera(const JsonObject &obj);
+    explicit Camera(const JsonObject &obj, double focusDistance);
 
     Point3 getOrigin() const;
     int getImageWidth() const;
     int getImageHeight() const;
     Vec3 getForward() const { return forward; }
+    int getSamplesPerPixel() const { return samplesPerPixel; }
 
     Ray getRay(int px, int py) const;
+
+private:
+    static Vec3 sampleSquare();
+    static Vec3 sampleDisk();
 };
 
 #endif //CGR_RAYTRACER_CAMERA_H

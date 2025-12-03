@@ -23,12 +23,13 @@ private:
     bool accelerate;
 
 public:
-    explicit Scene(const std::string& scenePath, const std::string& bvhPath);
+    explicit Scene(const std::string& scenePath, const std::string& bvhPath, double focusDistance);
     ~Scene();
 
     Camera* getCamera() const;
     std::map<std::string, Shape*> getShapes() const;
     BoundingVolumeHierarchy* getBVH() const;
+    std::vector<Light*>& getLights();
     bool canAccelerate() const;
 };
 

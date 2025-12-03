@@ -19,6 +19,8 @@ enum ShapeType {
     CONE,
     CYLINDER,
     MESH,
+    MOVING_SPHERE,
+    MOVING_CUBE
 };
 
 class ShapeFactory {
@@ -28,7 +30,8 @@ private:
 public:
     inline static std::map<std::string, ShapeType> typeMap = {
         {"SPHERE", SPHERE}, {"PLANE", PLANE}, {"CUBE", CUBE},
-        {"CONE", CONE}, {"CYLINDER", CYLINDER}, {"MESH", MESH}
+        {"CONE", CONE}, {"CYLINDER", CYLINDER}, {"MESH", MESH},
+        {"MOVING_SPHERE", MOVING_SPHERE}, {"MOVING_CUBE", MOVING_CUBE}
     };
 
     ShapeFactory() = default;

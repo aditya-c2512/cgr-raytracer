@@ -3,22 +3,20 @@
 //
 #include <shapes/plane.h>
 
+#include "materials/blinn-phong-material.h"
+
 Plane::Plane(const Point3 &point, const Vec3 &normal): point(point), normal(normal) {
 }
 
 Plane::Plane(const JsonObject &shapeObject) {
-    auto cornerObjects = shapeObject.at("corners").as<JsonArray>();
-    for (int i = 0; i < cornerObjects.size(); i++) {
-        auto cornerObject = cornerObjects[i].as<JsonArray>();
-        corners[i] = Point3(cornerObject[0].as<double>(), cornerObject[1].as<double>(), cornerObject[2].as<double>());
-    }
+    auto normalArray = shapeObject.at("normal").as<JsonArray>();
+    auto pointArray = shapeObject.at("point").as<JsonArray>();
 
-    point = corners[0];
+    normal = Vec3(normalArray[0].as<double>(), normalArray[1].as<double>(), normalArray[2].as<double>());
+    point = Point3(pointArray[0].as<double>(), pointArray[1].as<double>(), pointArray[2].as<double>());
 
-    Vec3 edge1 = corners[1] - corners[0];
-    Vec3 edge2 = corners[3] - corners[0];
-
-    normal = edge1.cross(edge2).normalize();
+    auto materialObject = shapeObject.at("material").as<JsonObject>();
+    material = std::make_shared<BlinnPhongMaterial>(materialObject);
 }
 
 bool Plane::intersect(const Ray &ray, double tMin, double tMax, Hit &record) {
@@ -38,8 +36,8 @@ bool Plane::intersect(const Ray &ray, double tMin, double tMax, Hit &record) {
 
     record.setT(t);
     record.setPoint(hitPoint);
-    record.setNormal(normal);
-    record.setColor(Color(0, 0, 1));
+    record.setFaceNormal(ray, normal);
+    record.setMaterial(material);
 
     return true;
 }

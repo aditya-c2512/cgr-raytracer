@@ -5,10 +5,10 @@
 #include <fstream>
 #include <math/ray.h>
 
-Ray::Ray(): origin(0, 0, 0), direction(0, 0, 0) {
+Ray::Ray(): origin(0, 0, 0), direction(0, 0, 0), time(0) {
 }
 
-Ray::Ray(const Point3 &origin, const Vec3 &direction): origin(origin), direction(direction) {
+Ray::Ray(const Point3 &origin, const Vec3 &direction, double time): origin(origin), direction(direction), time(time) {
 }
 
 Point3 Ray::getOrigin() const {
@@ -17,6 +17,10 @@ Point3 Ray::getOrigin() const {
 
 Vec3 Ray::getDirection() const {
     return direction;
+}
+
+double Ray::getTime() const {
+    return time;
 }
 
 Point3 Ray::at(const double t) const {

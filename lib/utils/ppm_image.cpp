@@ -54,7 +54,7 @@ void PpmImage::read() {
     for (int i = 0; i < tempWidth * tempHeight; ++i) {
         int r, g, b;
         imageFile >> r >> g >> b;
-        pixels[i] = Color(r, g, b);
+        pixels[i] = Color(r/255.0, g/255.0, b/255.0);
     }
 }
 
@@ -63,10 +63,10 @@ Color PpmImage::getPixel(int x, int y) {
 }
 
 void PpmImage::setPixel(const int x, const int y, const Color &color) {
-    pixels[y * width + x] = color;
-    logger->debug("Set pixel (" + std::to_string(x) + ", " + std::to_string(y) +
-    ") to R:" + std::to_string(color.getRed()) + ", G:" + std::to_string(color.getGreen())
-    + ", B:" + std::to_string(color.getBlue()));
+    pixels[y * width + x] = convertToGamma(color);
+    // logger->debug("Set pixel (" + std::to_string(x) + ", " + std::to_string(y) +
+    // ") to R:" + std::to_string(color.getRed()) + ", G:" + std::to_string(color.getGreen())
+    // + ", B:" + std::to_string(color.getBlue()));
 }
 
 void PpmImage::write() {
@@ -82,6 +82,8 @@ void PpmImage::write() {
     imageFile << "P3\n" << width << " " << height << "\n255\n";
 
     for (int i = 0; i < width * height; i++) {
+        pixels[i].clamp();
+
         const int imageRed = static_cast<int>(255.999 * pixels[i].getRed());
         const int imageGreen = static_cast<int>(255.999 * pixels[i].getGreen());
         const int imageBlue = static_cast<int>(255.999 * pixels[i].getBlue());
@@ -92,4 +94,14 @@ void PpmImage::write() {
     const std::filesystem::path filePath(filepath);
     logger->info("Finished writing image to file: " + std::filesystem::absolute(filePath).string());
     imageFile.close();
+}
+
+double PpmImage::convertToGamma(const double value) {
+    if (value < 0.0) return 0.0;
+
+    return std::sqrt(value);
+}
+
+Color PpmImage::convertToGamma(const Color &color) {
+    return {convertToGamma(color.getRed()), convertToGamma(color.getGreen()), convertToGamma(color.getBlue())};
 }

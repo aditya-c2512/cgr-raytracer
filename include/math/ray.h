@@ -15,14 +15,23 @@ private:
 
     Point3 origin;
     Vec3 direction;
+    double time;
+
 public:
     Ray();
-    Ray(const Point3& origin, const Vec3& direction);
+    Ray(const Point3& origin, const Vec3& direction, double time = 0.0);
 
     Point3 getOrigin() const;
     Vec3 getDirection() const;
+    double getTime() const;
     Point3 at(double t) const;
 
+    std::string toString() const {
+        return "Point: (" + std::to_string(origin.getX()) + ", " +
+        std::to_string(origin.getY()) + ", " + std::to_string(origin.getZ()) + ") Direction: (" +
+            std::to_string(direction.getX()) + ", " +
+                std::to_string(direction.getY()) + ", " + std::to_string(direction.getZ()) + ")";
+    }
     void visualise(const std::string& filename = "rays.txt") const;
 };
 

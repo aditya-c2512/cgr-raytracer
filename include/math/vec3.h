@@ -23,6 +23,28 @@ public:
     double getY() const;
     double getZ() const;
 
+    static Vec3 getRandom();
+    static Vec3 getRandom(double min, double max);
+    static Vec3 getRandomUnitVector() {
+        while (true) {
+            auto p = getRandom(-1,1);
+            if (1e-160 < p.lengthSquared() && p.lengthSquared() <= 1)
+                return p / sqrt(p.lengthSquared());
+        }
+    }
+    static Vec3 getRandomUnitVectorOnHemisphere(const Vec3& normal) {
+        auto vec = getRandomUnitVector();
+        if (vec.dot(normal) > 0) {
+            return vec;
+        }
+        return -vec;
+    }
+
+    bool isNearZero() const {
+        constexpr auto error = 1e-8;
+        return (std::fabs(x) < error) && (std::fabs(y) < error) && (std::fabs(z) < error);
+    }
+
     double& operator[](const int i) {
         switch (i) {
             case 0: return x;
@@ -61,6 +83,8 @@ public:
     double dot(const Vec3& v) const;
     Vec3 cross(const Vec3& v) const;
     Vec3 normalize() const;
+    Vec3 reflect(const Vec3& normal) const;
+    Vec3 refract(const Vec3& normal, double refractionIndex) const;
 };
 
 inline std::ostream& operator << (std::ostream& os, const Vec3& v) {

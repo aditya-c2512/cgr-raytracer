@@ -9,9 +9,13 @@
 #include <shapes/shape.h>
 #include <utils/json/json_value.h>
 
+#include "materials/blinn-phong-material.h"
+
 class Cube: public Shape {
 private:
     Point3 minPoint, maxPoint;
+    std::shared_ptr<Material> material;
+
 public:
     Cube(const Point3 &min, const Point3 &max);
     explicit Cube(const JsonObject& shapeObject);

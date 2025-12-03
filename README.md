@@ -25,8 +25,22 @@ cmake . # Skip if you don't want to rebuild Makefile.
 make
 ```
 ### Run the project
+#### Step 1. Exporting the Scene and BVH as JSON files
+- Open the .blend file in Blender.
+- Scripting > Text > Open
+- Open `/Blend/export.py`, Save the Blender project, and Click on Run. Say the JSON file is `/ASCII/Scene.json`.
+- Open `/Blend/export_bvh.py`, Save the Blender project, and Click on Run. Say the JSON file is `/ASCII/Scene_BVH.json`.
+
+> **NOTE:**
+> 
+> Since Blender does not support the PPM format for images, any texture paths exported from the Blender scene won't match 
+> the PPM image files in /Textures/. So, if the scene has any textured objects, please manually modify the field "texture_path"
+> in the Json objects in the output file.
+
+#### Step 2. 
 ```shell
-./cgr-raytrace --scene="../ASCII/Scene.json" --bvh="../ASCII/Scene_BVH.json" --render-output="../Output/Scene.ppm"
+cd Code/
+./cgr-raytracer --scene="../ASCII/Scene.json" --bvh="../ASCII/Scene_BVH.json" --render-output="../Output/Scene.ppm" --focus-dist=10.0 --max-depth=16 --light-samples=8 --glossy-samples=8 --nthreads=16
 ```
 
 ## Features Implemented
@@ -41,6 +55,19 @@ make
 - Structured the shapes as implementation of Shape interface, and used a Shape Factory to abstract the shape instantiation procedure.
 - Bounded Volume Hierarchy and Axis-Aligned Bounded Box for optimising ray-scene intersection tests.
 - BVH is made from a BVH JSON file. However, if a path is not provided, the renderer doesn't use acceleration structures while rendering.
+
+### Module 3
+- Blinn-Phong Shading model with reflection/refraction ray based on material.
+- Configurable Multisampling Anti-Aliasing (MSAA).
+- Normals-based UV texture coordinates generation for texture mapping.
+
+### Final Submission
+- Full integration of all features from Module 1, 2, and 3.
+- Soft shadows and glossy reflection as distributed raytracing effects.
+- Motion Blur.
+- Defocus Blur.
+- **Exceptional Feature:** Improved BVH Export script for Blender scenes.
+- **Exceptional Feature:** Multi-threading support to parallelise per-scanline raytracing.
 
 ## Coding Conventions
 ### Logs

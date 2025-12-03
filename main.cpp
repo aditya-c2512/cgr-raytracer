@@ -27,7 +27,7 @@ void printHelp() {
 
 int main(int argc, char** argv) {
     Logger* logger = Logger::getInstance();
-    logger->setLogLevel(LOG_LEVEL_INFO);
+    logger->setLogLevel(LOG_LEVEL_DEBUG);
 
     auto* args = new ArgsParser(argc, argv);
 
@@ -47,9 +47,11 @@ int main(int argc, char** argv) {
         bvhPath = args->get("bvh").stringVal;
     }
 
-    auto* scene = new Scene(args->get("scene").stringVal, bvhPath);
+    auto* scene = new Scene(args->get("scene").stringVal, bvhPath, args->get("focus-dist").floatingNum);
 
-    const auto* app = new RayTracerApp(scene, args->get("render-output").stringVal);
+    const auto* app = new RayTracerApp(scene, args->get("render-output").stringVal,
+        args->get("max-depth").integerNum, args->get("light-samples").integerNum,
+        args->get("glossy-samples").integerNum, args->get("nthreads").integerNum);
     app->run();
 
     logger->info("Application finished.");

@@ -23,29 +23,28 @@ Cube::Cube(const JsonObject &shapeObject) {
 
     minPoint = { location.getX() - w.getX(), location.getY() - w.getY(), location.getZ() - w.getZ() };
     maxPoint = { location.getX() + w.getX(), location.getY() + w.getY(), location.getZ() + w.getZ() };
+
+    auto materialObject = shapeObject.at("material").as<JsonObject>();
+    material = std::make_shared<BlinnPhongMaterial>(materialObject);
 }
 
 bool Cube::intersect(const Ray &ray, double tMin, double tMax, Hit &record) {
     double t0 = tMin;
     double t1 = tMax;
 
-    Vec3 normal; // normal of hit face
+    Vec3 normal;
 
-    // For each axis: find intersection with the slabs
     for (int i = 0; i < 3; ++i) {
         double invD = 1.0 / ray.getDirection()[i];
         double tNear = (minPoint[i] - ray.getOrigin()[i]) * invD;
         double tFar  = (maxPoint[i] - ray.getOrigin()[i]) * invD;
 
-        // swap if needed
         if (invD < 0.0) std::swap(tNear, tFar);
 
-        // Update t0 and t1 for the interval
         if (tNear > t0) {
             t0 = tNear;
-            // set normal according to which face we hit
             normal = Vec3(0, 0, 0);
-            normal[i] = (invD > 0) ? -1 : 1; // direction of normal
+            normal[i] = (invD > 0) ? -1 : 1;
         }
         t1 = std::min(t1, tFar);
 
@@ -57,8 +56,8 @@ bool Cube::intersect(const Ray &ray, double tMin, double tMax, Hit &record) {
     // At this point, t0 is the first intersection distance
     record.setT(t0);
     record.setPoint(ray.at(t0));
-    record.setNormal(normal);
-    record.setColor(Color(0, 1, 0));
+    record.setFaceNormal(ray, normal);
+    record.setMaterial(material);
 
     return true;
 }

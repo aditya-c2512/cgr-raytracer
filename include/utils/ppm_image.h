@@ -27,10 +27,15 @@ public:
     // Image reading util function
     void read() override;
     Color getPixel(int x, int y) override;
+    std::vector<Color>* getImageBuffer() { return &pixels; }
 
     // Image writing util functions
     void setPixel(int x, int y, const Color &color) override;
     void write() override;
+
+private:
+    double convertToGamma(double value);
+    Color convertToGamma(const Color &color);
 };
 
 
