@@ -37,6 +37,7 @@ bool Plane::intersect(const Ray &ray, double tMin, double tMax, Hit &record) {
     record.setPoint(hitPoint);
     record.setFaceNormal(ray, normal);
     record.setMaterial(material);
+    record.setUV(hitPoint.getX() / (TX - 1), hitPoint.getY() / (TY - 1));
 
     return true;
 }

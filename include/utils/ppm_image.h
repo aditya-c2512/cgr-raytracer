@@ -12,6 +12,9 @@
 #include "image.h"
 #include "logger.h"
 
+#define TX 1024
+#define TY 1024
+
 class PpmImage : public Image {
 private:
     Logger* logger = Logger::getInstance();

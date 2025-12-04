@@ -56,6 +56,7 @@ bool Cube::intersect(const Ray &ray, double tMin, double tMax, Hit &record) {
     record.setPoint(ray.at(t0));
     record.setFaceNormal(ray, normal);
     record.setMaterial(material);
+    record.setUV(record.getPoint().getX() / (TX - 1), record.getPoint().getY() / (TY - 1));
 
     return true;
 }

@@ -59,7 +59,7 @@ void PpmImage::read() {
 }
 
 Color PpmImage::getPixel(int x, int y) {
-    return pixels[y * width + x];
+    return pixels[(y % height) * width + (x % width)];
 }
 
 void PpmImage::setPixel(const int x, const int y, const Color &color) {

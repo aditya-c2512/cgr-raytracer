@@ -2,8 +2,6 @@
 // Created by Aditya Choubey on 13/11/2025.
 //
 #include <materials/blinn-phong-material.h>
-#define TX 1024
-#define TY 1024
 
 BlinnPhongMaterial::BlinnPhongMaterial(JsonObject &materialJson) {
     auto texturePath = materialJson["texture_path"].as<std::string>();
